@@ -1,11 +1,13 @@
 package gui.kunde;
 
-import java.sql.SQLException;
+// import java.sql.SQLException;
 
 import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import gui.grundriss.GrundrissControl;
 import javafx.stage.Stage;
+
+import business.DatabaseConnector;
 
 /**
  * Klasse, welche das Grundfenster mit den Kundendaten kontrolliert.
@@ -16,6 +18,7 @@ public class KundeControl {
 	private KundeView kundeView;
     // das Model-Objekt des Grundfensters mit den Kundendaten
     private KundeModel kundeModel;
+	// private SonderwunschModel swModel;
     /* das GrundrissControl-Objekt fuer die Sonderwuensche
        zum Grundriss zu dem Kunden */
     private GrundrissControl grundrissControl;
@@ -25,8 +28,10 @@ public class KundeControl {
 	 * Grundfenster mit den Kundendaten.
 	 * @param primaryStage, Stage fuer das View-Objekt zu dem Grundfenster mit den Kundendaten
 	 */
-    public KundeControl(Stage primaryStage) { 
-        this.kundeModel = KundeModel.getInstance(); 
+    public KundeControl(Stage primaryStage) {
+		DatabaseConnector connector = DatabaseConnector.getInstance();
+		this.kundeModel = KundeModel.getInstance(connector);
+		// this.swModel = SonderwunschModel.getInstance(connector);
         this.kundeView = new KundeView(this, primaryStage, kundeModel);
     }
     
@@ -47,13 +52,14 @@ public class KundeControl {
 	 */
     public void speichereKunden(Kunde kunde){
       	try{
-    		kundeModel.speichereKunden(kunde);
+    		kundeModel.addKunde(kunde);
+			// swModel.addSonderwunsch(kunde);
     	}
-    	catch(SQLException exc){
-    		exc.printStackTrace();
-    		this.kundeView.zeigeFehlermeldung("SQLException",
-                "Fehler beim Speichern in die Datenbank");
-    	}
+    	// catch(SQLException exc){
+    	// 	exc.printStackTrace();
+    	// 	this.kundeView.zeigeFehlermeldung("SQLException",
+        //         "Fehler beim Speichern in die Datenbank");
+    	// }
     	catch(Exception exc){
     		exc.printStackTrace();
     		this.kundeView.zeigeFehlermeldung("Exception",

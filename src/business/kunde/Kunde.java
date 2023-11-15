@@ -1,19 +1,49 @@
 package business.kunde;
+import org.bson.types.ObjectId;
 
 public class Kunde {
 	
-	private int hausnummer;
+	private ObjectId id;
+	private ObjectId haustypId;
+	private String kundennummer;
 	private String vorname;
 	private String nachname;
 	private String telefonnummer;
 	private String email;
-		  
-	public int getHausnummer() {
-		return hausnummer;
+
+	public Kunde(String kundennummer, ObjectId haustypId, String vorname, String nachname,
+				String telefonnummer, String email){
+		this.kundennummer = kundennummer;
+		this.haustypId = haustypId;
+		this.vorname = vorname;
+		this.nachname = nachname;
+		this.telefonnummer = telefonnummer;
+		this.email = email;
 	}
 
-	public void setHausnummer(int hausnummer) {
-		this.hausnummer = hausnummer;
+	public ObjectId getId(){
+		return id;
+	}
+
+	public void setId(ObjectId id){
+		this.id = id;
+	}
+	
+
+	public String getKundennummer(){
+		return kundennummer;
+	}
+
+	public void setKundennummer(String kundennummer){
+		this.kundennummer = kundennummer;
+	}
+
+	public ObjectId getHaustypId() {
+		return haustypId;
+	}
+
+	public void setHaustypId(ObjectId haustypId) {
+		this.haustypId = haustypId;
 	}
 
 	public String getVorname() {
