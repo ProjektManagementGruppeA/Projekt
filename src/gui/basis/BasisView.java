@@ -20,6 +20,7 @@ public abstract class BasisView {
    	private Label lblSonderwunsch   	= new Label("Sonderwunsch");
     private Button btnBerechnen 	 	= new Button("Preis berechnen");
     private Button btnSpeichern 	 	= new Button("Speichern");
+   
     //-------Ende Attribute der grafischen Oberflaeche-------
   
    /**

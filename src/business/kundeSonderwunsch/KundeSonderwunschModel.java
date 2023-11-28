@@ -115,7 +115,19 @@ public class KundeSonderwunschModel {
             return result.getModifiedCount() > 0;
         }
     }
+    
+    
+    
+    
 
+    public KundeSonderwunsch getKundeSonderwunschByKundeAndSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId) {
+        Document doc = collection.find(Filters.and(Filters.eq("kundeId", kundeId), Filters.eq("sonderwunschId", sonderwunschId))).first();
+        if (doc == null) {
+            return null; // No matching record found
+        }
+        return documentToKundeSonderwunsch(doc); // Convert the found document to a KundeSonderwunsch object
+    }
+    
     public boolean updateKundeSonderwunschByKundeAndSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId, int anzahl) {
         if (anzahl == 0) {
             return deleteKundeSonderwunschByKundeAndSonderwunsch(kundeId, sonderwunschId);
