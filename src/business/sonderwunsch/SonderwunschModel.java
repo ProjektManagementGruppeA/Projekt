@@ -71,6 +71,33 @@ public class SonderwunschModel {
         return documentToSonderwunsch(doc);
     }
 
+    public List<Sonderwunsch> getSonderwunschByKategorie(String kategorieName) {
+        List<Sonderwunsch> sonderwuensche = new ArrayList<>();
+        SonderwunschKategorieModel kategorieModel = SonderwunschKategorieModel.getInstance(dbconnector);
+        SonderwunschKategorie kategorie = kategorieModel.getSonderwunschKategorieByName(kategorieName);
+    
+        if (kategorie == null) {
+            return sonderwuensche; // Return empty list if category not found
+        }
+    
+        ObjectId kategorieId = kategorie.getId();
+        for (Document doc : collection.find(Filters.eq("kategorieId", kategorieId))) {
+            sonderwuensche.add(documentToSonderwunsch(doc));
+        }
+    
+        return sonderwuensche;
+    }
+
+    public List<ObjectId> getSonderwunschIdsByKategorieId(ObjectId kategorieId) {
+        List<ObjectId> sonderwunschIds = new ArrayList<>();
+        for (Document doc : collection.find(Filters.eq("kategorieId", kategorieId))) {
+            ObjectId sonderwunschId = doc.getObjectId("_id");
+            sonderwunschIds.add(sonderwunschId);
+        }
+        return sonderwunschIds;
+    }
+    
+
     /**
      * Ermittelt alle Sonderwünsche in der Datenbank.
      *
