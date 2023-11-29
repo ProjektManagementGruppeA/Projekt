@@ -1,5 +1,8 @@
 package gui.grundriss;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import business.DatabaseConnector;
+import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
@@ -14,6 +18,8 @@ import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
 import gui.basis.BasisView;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -70,6 +76,8 @@ public class GrundrissView extends BasisView{
 	private CheckBox chckBxABad		= new CheckBox();
     //-------Ende Attribute der grafischen Oberflaeche-------
 	List<CheckBox> listCheckBox = new ArrayList<>();
+	private ObjectId kunde;
+	DatabaseConnector connector = DatabaseConnector.getInstance();
 	
 	public Button button = new Button("Sonderwunsch speichern");
 	
@@ -79,26 +87,30 @@ public class GrundrissView extends BasisView{
      * @param grundrissControl GrundrissControl, enthaelt das zugehoerige Control
      * @param grundrissStage Stage, enthaelt das Stage-Objekt fuer diese View
      */
-    public GrundrissView (GrundrissControl grundrissControl, Stage grundrissStage){
+    public GrundrissView (GrundrissControl grundrissControl, Stage grundrissStage){ // ObjectId kunde von MainView aus übergeben
     	super(grundrissStage);
         this.grundrissControl = grundrissControl;
         grundrissStage.setTitle("Sonderw�nsche zu Grundriss-Varianten");
         this.preise = this.grundrissControl.leseGrundrissSonderwuenschePreise();
         
 	    this.initKomponenten();
-	    
+	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId(); // replace with constructor parameter
 	  
 	    
-	    this.loadSonderwuensche(new ObjectId("65665847c1185e382cd74804"));
+	    this.loadSonderwuensche(this.kunde);
 	    
 	    
 	 
     }
     
     
+   
+   
+    
+    
    public void loadSonderwuensche(ObjectId kunde)
    {
-	   DatabaseConnector connector = DatabaseConnector.getInstance();
+	   
 	   List<KundeSonderwunsch> list = this.grundrissControl.loadKundenSonderwunsch(kunde, "Grundriss");
 	   if(list.size()>=1) {
 		   for(int i = 0; i < list.size(); i++) {
@@ -133,7 +145,7 @@ public class GrundrissView extends BasisView{
   
    
    public void saveSonderwuensche(ObjectId kunde) throws Exception {
-	    DatabaseConnector connector = DatabaseConnector.getInstance();
+	    
 	    KundeSonderwunschModel kundeSonderwunschModel = KundeSonderwunschModel.getInstance(connector);
 	    List<Sonderwunsch> listSonderwunsch = SonderwunschModel.getInstance(connector).getSonderwunschByKategorie("Grundriss");
 	    
@@ -224,13 +236,7 @@ public class GrundrissView extends BasisView{
     	super.getGridPaneSonderwunsch().add(chckBxABad, 3, 6);
     	
     	
-    	
-    	listCheckBox.add(chckBxWandKueche);
-  	    listCheckBox.add(chckBxTuerKueche);
-  	    listCheckBox.add(chckBxOg);
-  	    listCheckBox.add(chckBxTreppenraumDg);
-  	    listCheckBox.add(chckBxVBad);
-  	    listCheckBox.add(chckBxABad);
+    	//menubar
     }  
     
     /**
@@ -282,13 +288,50 @@ public class GrundrissView extends BasisView{
   	
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected void speichereSonderwuensche(){
-  		DatabaseConnector connector = DatabaseConnector.getInstance();
   		try {
 			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+  	}
+
+  	@Override
+  	protected void speichereCsv() {
+  	    try {
+  	        // Datei-Auswahldialog anzeigen
+  	        FileChooser fileChooser = new FileChooser();
+  	        fileChooser.setTitle("CSV speichern");
+  	        fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV Dateien", "*.csv"));
+  	        File file = fileChooser.showSaveDialog(sonderwunschStage);
+
+  	        if (file != null) {
+  	            FileWriter writer = new FileWriter(file);
+  	            // Header schreiben
+  	            writer.append("Beschreibung,Preis,Anzahl\n");
+
+  	            // Sonderwünsche durchgehen und in die CSV-Datei schreiben
+  	            writeSonderwunschToCsv(writer, "Wand zur Abtrennung der Küche von dem Essbereich", txtPreisWandKueche, chckBxWandKueche);
+  	            writeSonderwunschToCsv(writer, "Tür in der Wand zwischen Küche und Essbereich", txtPreisTuerKueche, chckBxTuerKueche);
+  	            writeSonderwunschToCsv(writer, "Großes Zimmer im OG statt zwei kleinen Zimmern", txtPreisOg, chckBxOg);
+  	            writeSonderwunschToCsv(writer, "Abgetrennter Treppenraum im DG", txtPreisTreppenraumDg, chckBxTreppenraumDg);
+  	            writeSonderwunschToCsv(writer, "Vorrichtung eines Bades im DG", txtPreisVBad, chckBxVBad);
+  	            writeSonderwunschToCsv(writer, "Ausführung eines Bades im DG", txtPreisABad, chckBxABad);
+
+  	            writer.close();
+  	        }
+  	    } catch (IOException e) {
+  	        e.printStackTrace();
+  	        // Hier können Sie entsprechend mit der IOException umgehen
+  	    }
+  	}
+
+  	private void writeSonderwunschToCsv(FileWriter writer, String beschreibung, TextField preisField, CheckBox checkBox) throws IOException {
+  	    if (checkBox.isSelected()) {
+  	        // Wenn CheckBox ausgewählt ist, dann den Sonderwunsch in die CSV schreiben
+  	        int preis = Integer.parseInt(preisField.getText());
+  	        writer.append(beschreibung + "," + preis + ",1\n");
+  	    }
   	}
   	
  	

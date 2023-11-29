@@ -35,7 +35,7 @@ public final class GrundrissControl {
 	public GrundrissControl(KundeModel kundeModel){  
 	   	Stage stageGrundriss = new Stage();
     	stageGrundriss.initModality(Modality.APPLICATION_MODAL);
-    	this.grundrissView = new GrundrissView(this, stageGrundriss);
+    	this.grundrissView = new GrundrissView(this, stageGrundriss); // ObjectId kunde
 	}
 	    
 	/**
