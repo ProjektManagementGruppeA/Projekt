@@ -1,6 +1,8 @@
 package business.kunde;
 
 import business.DatabaseConnector;
+import business.haustyp.Haustyp;
+import business.haustyp.HaustypModel;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -17,11 +19,13 @@ import java.util.List;
 public class KundeModel {
     private static KundeModel instance; // Die Singleton-Instanz
     private MongoCollection<Document> collection;
+    private HaustypModel haustypModel;
 
     // Privater Konstruktor verhindert Instanziierung von außen
     private KundeModel(DatabaseConnector connector) {
         MongoDatabase database = connector.getDatabase();
         collection = database.getCollection("kunden");
+        this.haustypModel = HaustypModel.getInstance(connector);
     }
 
     /**
@@ -43,7 +47,7 @@ public class KundeModel {
      * @return ObjectId Die Datenbank-ID des gespeicherten Kunden.
      * @throws IllegalArgumentException, wenn das Kunde-Objekt null ist.
      */
-    public ObjectId addKunde(Kunde kunde) {
+    public ObjectId addKunde(Kunde kunde) throws Exception{
         Document doc = new Document("kundennummer", kunde.getKundennummer())
                 .append("haustypId", kunde.getHaustypId())
                 .append("vorname", kunde.getVorname())
@@ -51,8 +55,21 @@ public class KundeModel {
                 .append("telefonnummer", kunde.getTelefonnummer())
                 .append("email", kunde.getEmail());
 
-        collection.insertOne(doc);
-        return doc.getObjectId("_id");
+        Document haustyp = collection.find(Filters.eq("haustypId", kunde.getHaustypId())).first();
+
+        if (haustyp != null){
+            throw new Exception("Kunde mit der Hausnummer existiert bereits");
+        }
+        else if (this.getKundeByKundennummer(kunde.getKundennummer()) != null){
+            throw new Exception("Kunde mit der Kundennummer existiert bereits");
+        }
+        else if (this.getKundeByEmail(kunde.getEmail()) != null){
+            throw new Exception("Kunde mit der E-Mail Adresse existiert bereits");
+        }
+        else{
+            collection.insertOne(doc);
+            return doc.getObjectId("_id");
+        }
     }
 
     /**
@@ -64,6 +81,37 @@ public class KundeModel {
     public Kunde getKundeByKundennummer(String kundennummer) {
         Document doc = collection.find(Filters.eq("kundennummer", kundennummer)).first();
         return documentToKunde(doc);
+    }
+
+    /**
+     * Ermittelt ein Kunde-Objekt anhand einer Hausnummer.
+     *
+     * @param hausnummer Die zu suchende Hausnummer.
+     * @return Kunde Das gefundene Kundenobjekt, andernfalls null.
+     */
+    public Kunde getKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return null;
+        }
+
+        Document doc = collection.find(Filters.eq("haustypId", haustyp.getId())).first();
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToKunde(doc);
+    }
+
+    public boolean deleteKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return false;
+        }
+
+        DeleteResult result = collection.deleteOne(Filters.eq("haustypId", haustyp.getId()));
+        return result.getDeletedCount() > 0;
+        
     }
 
     /**
@@ -112,11 +160,10 @@ public class KundeModel {
     /**
      * Aktualisiert die Informationen eines Kunden in der Datenbank.
      *
-     * @param id Der ID des zu aktualisierenden Kunden.
      * @param kunde Die neuen Informationen des Kunden.
      * @return boolean Wahr, wenn das Update erfolgreich war, falsch andernfalls.
      */
-    public boolean updateKunde(ObjectId id, Kunde kunde) {
+    public boolean updateKunde(Kunde kunde) {
         Document doc = new Document("kundennummer", kunde.getKundennummer())
                 .append("haustypId", kunde.getHaustypId())
                 .append("vorname", kunde.getVorname())
@@ -124,7 +171,7 @@ public class KundeModel {
                 .append("telefonnummer", kunde.getTelefonnummer())
                 .append("email", kunde.getEmail());
 
-        UpdateResult result = collection.updateOne(Filters.eq("_id", id), new Document("$set", doc));
+        UpdateResult result = collection.updateOne(Filters.eq("_id", kunde.getId()), new Document("$set", doc));
         return result.getModifiedCount() > 0;
     }
 
