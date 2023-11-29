@@ -60,4 +60,54 @@ public class KundeControl {
                 "Unbekannter Fehler");
     	}
     }
+
+	public Kunde leseKunde(int hausnummer) {
+		try{
+    		return kundeModel.leseKunde(hausnummer);
+    	}
+    	catch(SQLException exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("SQLException",
+                "Fehler beim lesen aus der Datenbank");
+    	}
+    	catch(Exception exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("Exception",
+                "Unbekannter Fehler");
+    	}
+		return null;
+	}
+
+	public void aendereKunden(Kunde kunde) {
+		try{
+    		kundeModel.aendereKunden(kunde);
+    	}
+    	catch(SQLException exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("SQLException",
+                "Fehler beim Speichern in die Datenbank");
+    	}
+    	catch(Exception exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("Exception",
+                "Unbekannter Fehler");
+    	}
+		
+	}
+
+	public void loescheKunde(int hausnummer) {
+		try{
+    		kundeModel.loescheKunden(hausnummer);
+    	}
+    	catch(SQLException exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("SQLException",
+                "Fehler beim Loeschen aus der Datenbank");
+    	}
+    	catch(Exception exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("Exception",
+                "Unbekannter Fehler");
+    	}
+	}
 }

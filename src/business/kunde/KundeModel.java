@@ -67,5 +67,24 @@ public final class KundeModel {
 	    throws SQLException, Exception{
         // Speicherung des Kunden in der DB
    	    this.kunde = kunde;
+	}
+
+	public Kunde leseKunde(int hausnummer)
+		throws SQLException, Exception{
+		//Kunden aus der DB lesen 
+		return kunde;
+	}
+
+	public void aendereKunden(Kunde kunde) 
+		throws SQLException, Exception{
+		// Aemdere Kunde in der DB
+		this.kunde = kunde;
+		
+	}
+
+	public void loescheKunden(int hausnummer) 
+		throws SQLException, Exception{
+		// Loesche Kunde aus der DB
+				
 	}  
 }

@@ -27,6 +27,8 @@ public class KundeView{
     private Label lblNummerHaus     	= new Label("Plannummer des Hauses");
     private ComboBox<Integer> 
         cmbBxNummerHaus                 = new ComboBox<Integer>();
+    private Label lblKundennummer      	= new Label("Kundennummer");
+    private TextField txtKundennummer 	= new TextField();
     private Label lblVorname         	= new Label("Vorname");
     private TextField txtVorname     	= new TextField();
     private Label lblNachname         	= new Label("Nachname");
@@ -79,20 +81,22 @@ public class KundeView{
 	    gridPane.add(cmbBxNummerHaus, 1, 2);
 	    cmbBxNummerHaus.setMinSize(150,  25);
 	    cmbBxNummerHaus.setItems(this.kundeModel.getPlannummern());
-	    gridPane.add(lblVorname, 0, 3);
-	    gridPane.add(txtVorname, 1, 3);
-	    gridPane.add(lblNachname, 0, 4);
-	    gridPane.add(txtNachname, 1, 4);
-	    gridPane.add(lblTelefonnummer, 0, 5);
-	    gridPane.add(txtTelefonnummer, 1, 5);
-	    gridPane.add(lblEmail, 0, 6);
-	    gridPane.add(txtEmail, 1, 6);
+	    gridPane.add(lblKundennummer, 0, 3);
+	    gridPane.add(txtKundennummer, 1, 3);
+	    gridPane.add(lblVorname, 0, 4);
+	    gridPane.add(txtVorname, 1, 4);
+	    gridPane.add(lblNachname, 0, 5);
+	    gridPane.add(txtNachname, 1, 5);
+	    gridPane.add(lblTelefonnummer, 0, 6);
+	    gridPane.add(txtTelefonnummer, 1, 6);
+	    gridPane.add(lblEmail, 0, 7);
+	    gridPane.add(txtEmail, 1, 7);
 	    // Buttons
-	    gridPane.add(btnAnlegen, 0, 7);
+	    gridPane.add(btnAnlegen, 0, 8);
 	    btnAnlegen.setMinSize(150,  25);
-	    gridPane.add(btnAendern, 1, 7);
+	    gridPane.add(btnAendern, 1, 8);
 	    btnAendern.setMinSize(150,  25);
-	    gridPane.add(btnLoeschen, 2, 7);
+	    gridPane.add(btnLoeschen, 2, 8);
 	    btnLoeschen.setMinSize(150,  25);
 	    // MenuBar und Menu
 	    borderPane.setTop(mnBar);
@@ -129,18 +133,40 @@ public class KundeView{
     }
     
     private void leseKunden(){
+    	int hausnummer = cmbBxNummerHaus.getValue();
+    	Kunde kunde = kundeControl.leseKunde(hausnummer);
+    	txtKundennummer.setText(kunde.getKundennummer());
+    	txtEmail.setText(kunde.getEmail());
+    	txtVorname.setText(kunde.getVorname());
+    	txtNachname.setText(kunde.getNachname());
+    	txtTelefonnummer.setText(kunde.getTelefonnummer());
     }
     
     private void legeKundenAn(){
-         Kunde kunde = null;
+         Kunde kunde = new Kunde();
+         kunde.setKundennummer(txtKundennummer.getText());
+         kunde.setHausnummer(cmbBxNummerHaus.getValue());
+         kunde.setEmail(txtEmail.getText());
+         kunde.setVorname(txtVorname.getText());
+         kunde.setNachname(txtNachname.getText());
+         kunde.setTelefonnummer(txtTelefonnummer.getText());
          // Objekt kunde fuellen
          kundeControl.speichereKunden(kunde);
    	}
     
   	private void aendereKunden(){
+  		int hausnummer = cmbBxNummerHaus.getValue();
+    	Kunde kunde = kundeControl.leseKunde(hausnummer);
+    	kunde.setVorname(txtVorname.getText());
+    	kunde.setNachname(txtNachname.getText());
+    	kunde.setTelefonnummer(txtTelefonnummer.getText());
+    	kunde.setEmail(txtEmail.getText());
+    	kundeControl.aendereKunden(kunde);
    	}
   	
    	private void loescheKunden(){
+   		int hausnummer = cmbBxNummerHaus.getValue();
+    	kundeControl.loescheKunde(hausnummer);
    	}
    	
     private void exportAsCsv() {

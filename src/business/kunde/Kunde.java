@@ -3,11 +3,20 @@ package business.kunde;
 public class Kunde {
 	
 	private int hausnummer;
+	private String kundennummer;
 	private String vorname;
 	private String nachname;
 	private String telefonnummer;
 	private String email;
-		  
+	
+	public String getKundennummer() {
+		return kundennummer;
+	}
+	
+	public void setKundennummer(String kundennummer) {
+		this.kundennummer = kundennummer;
+	}
+	
 	public int getHausnummer() {
 		return hausnummer;
 	}
