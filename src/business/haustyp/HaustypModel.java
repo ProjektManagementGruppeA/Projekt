@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HaustypModel {
-    private MongoCollection<Document> collection;
+	private MongoCollection<Document> collection;
+    private static HaustypModel instance;
 
     /**
      * Konstruktor, der eine Verbindung zur Haustypen-Sammlung in der MongoDB herstellt.
@@ -24,6 +25,13 @@ public class HaustypModel {
     public HaustypModel(DatabaseConnector connector) {
         MongoDatabase database = connector.getDatabase();
         collection = database.getCollection("haustypen");
+    }
+
+    public static HaustypModel getInstance(DatabaseConnector connector) {
+        if (instance == null) {
+            instance = new HaustypModel(connector);
+        }
+        return instance;
     }
 
     /**
@@ -129,6 +137,16 @@ public class HaustypModel {
         haustyp.setId(id);
 
         return haustyp;
+    }
+    
+    public Haustyp getHaustypByHausnummer(int hausnummer) {
+        Document doc = collection.find(Filters.eq("plannummer", hausnummer)).first();
+
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToHaustyp(doc);
     }
 
     /* enthaelt die Plannummern der Haeuser, diese muessen vielleicht noch

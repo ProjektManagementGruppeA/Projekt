@@ -8,6 +8,7 @@ import gui.grundriss.GrundrissControl;
 import javafx.stage.Stage;
 
 import business.DatabaseConnector;
+import business.haustyp.HaustypModel;
 
 /**
  * Klasse, welche das Grundfenster mit den Kundendaten kontrolliert.
@@ -18,6 +19,7 @@ public class KundeControl {
 	private KundeView kundeView;
     // das Model-Objekt des Grundfensters mit den Kundendaten
     private KundeModel kundeModel;
+    private HaustypModel haustypModel;
 	// private SonderwunschModel swModel;
     /* das GrundrissControl-Objekt fuer die Sonderwuensche
        zum Grundriss zu dem Kunden */
@@ -31,8 +33,9 @@ public class KundeControl {
     public KundeControl(Stage primaryStage) {
 		DatabaseConnector connector = DatabaseConnector.getInstance();
 		this.kundeModel = KundeModel.getInstance(connector);
+		this.haustypModel = HaustypModel.getInstance(connector);
 		// this.swModel = SonderwunschModel.getInstance(connector);
-        this.kundeView = new KundeView(this, primaryStage, kundeModel);
+        this.kundeView = new KundeView(this, primaryStage, kundeModel, haustypModel);
     }
     
     /*
@@ -63,7 +66,58 @@ public class KundeControl {
     	catch(Exception exc){
     		exc.printStackTrace();
     		this.kundeView.zeigeFehlermeldung("Exception",
+                exc.getMessage());
+    	}
+    }
+    
+    public Kunde leseKunde(int hausnummer) {
+		try{
+    		return kundeModel.getKundeByHausnummer(hausnummer);
+    	}
+//    	catch(SQLException exc){
+//    		exc.printStackTrace();
+//    		this.kundeView.zeigeFehlermeldung("SQLException",
+//                "Fehler beim lesen aus der Datenbank");
+//    	}
+    	catch(Exception exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("Exception",
                 "Unbekannter Fehler");
+    		return null;
+    	}
+	}
+    
+    public void aendereKunden(Kunde kunde) {
+		try{
+    		kundeModel.updateKunde(kunde);
+    	}
+//    	catch(SQLException exc){
+//    		exc.printStackTrace();
+//    		this.kundeView.zeigeFehlermeldung("SQLException",
+//                "Fehler beim Speichern in die Datenbank");
+//    	}
+    	catch(Exception exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("Exception",
+                "Unbekannter Fehler");
+    	}
+
+	}
+    
+    public boolean loescheKunde(Kunde kunde) {
+		try{
+    		return kundeModel.deleteKunde(kunde.getId());
+    	}
+//    	catch(SQLException exc){
+//    		exc.printStackTrace();
+//    		this.kundeView.zeigeFehlermeldung("SQLException",
+//                "Fehler beim Loeschen aus der Datenbank");
+//    	}
+    	catch(Exception exc){
+    		exc.printStackTrace();
+    		this.kundeView.zeigeFehlermeldung("Exception",
+                "Unbekannter Fehler");
+    		return false;
     	}
     }
 }
