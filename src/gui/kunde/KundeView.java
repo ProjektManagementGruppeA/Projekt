@@ -2,6 +2,7 @@ package gui.kunde;
 
 import org.bson.types.ObjectId;
 
+import business.haustyp.Haustyp;
 import business.haustyp.HaustypModel;
 import business.kunde.*;
 
@@ -31,6 +32,7 @@ public class KundeView{
     private Label lblNummerHaus     	= new Label("Plannummer des Hauses");
     private ComboBox<Integer> 
         cmbBxNummerHaus                 = new ComboBox<Integer>();
+    private CheckBox cbxDachgeschoss 	= new CheckBox("Hat ein Dachgeschoss");
     private Label lblKundennummer      	= new Label("Kundennummer");
     private TextField txtKundennummer 	= new TextField();
     private Label lblVorname         	= new Label("Vorname");
@@ -84,6 +86,8 @@ public class KundeView{
 	    gridPane.add(cmbBxNummerHaus, 1, 2);
 	    cmbBxNummerHaus.setMinSize(150,  25);
 	    cmbBxNummerHaus.setItems(this.haustypModel.getPlannummern());
+	    
+	    gridPane.add(cbxDachgeschoss, 2, 2);
        	
 	    gridPane.add(lblKunde, 0, 1);
        	lblKunde.setMinSize(150, 40);
@@ -118,6 +122,9 @@ public class KundeView{
     		 holeInfoDachgeschoss();  
     		 leseKunden();
      	});
+    	cbxDachgeschoss.setOnAction(aEvent-> {
+    		aendereHaustyp();
+    	});
        	btnAnlegen.setOnAction(aEvent-> {
  	        legeKundenAn();
 	    });
@@ -135,8 +142,18 @@ public class KundeView{
        	});
     }
     
-    private void holeInfoDachgeschoss(){ 
+    private void holeInfoDachgeschoss(){
+    	int hausnummer = cmbBxNummerHaus.getValue();
+    	Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+    	if (haustyp != null) {
+    		cbxDachgeschoss.setSelected(haustyp.isHatDachgeschoss());
+    	}
+    	else {
+    		haustyp = new Haustyp(hausnummer, false);
+    		this.haustypModel.addHaustyp(haustyp);
+    	}
     }
+    
     
     private void leseKunden(){
     	int hausnummer = cmbBxNummerHaus.getValue();
@@ -167,12 +184,21 @@ public class KundeView{
     private void aendereKunden(){
   		int hausnummer = cmbBxNummerHaus.getValue();
     	Kunde kunde = kundeControl.leseKunde(hausnummer);
+    	kunde.setKundennummer(txtKundennummer.getText());
     	kunde.setVorname(txtVorname.getText());
     	kunde.setNachname(txtNachname.getText());
     	kunde.setTelefonnummer(txtTelefonnummer.getText());
     	kunde.setEmail(txtEmail.getText());
     	kundeControl.aendereKunden(kunde);
    	}
+    
+    private void aendereHaustyp() {
+    	int hausnummer = cmbBxNummerHaus.getValue();
+    	boolean dachgeschossvorhanden = cbxDachgeschoss.isSelected();
+    	Haustyp haustyp = new Haustyp(hausnummer, dachgeschossvorhanden);
+    	ObjectId id = haustypModel.getHaustypByHausnummer(hausnummer).getId();
+    	haustypModel.updateHaustyp(id, haustyp);
+    }
    	
   	
    	private void loescheKunden(){
@@ -202,6 +228,14 @@ public class KundeView{
     public void zeigeFehlermeldung(String ueberschrift, String meldung){
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Fehlermeldung");
+        alert.setHeaderText(ueberschrift);
+        alert.setContentText(meldung);
+        alert.show();
+    }
+    
+    public void zeigeErfolg(String ueberschrift, String meldung){
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Erfolgreich");
         alert.setHeaderText(ueberschrift);
         alert.setContentText(meldung);
         alert.show();

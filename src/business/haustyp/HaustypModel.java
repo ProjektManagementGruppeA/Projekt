@@ -99,7 +99,7 @@ public class HaustypModel {
      * @return boolean True, wenn die Aktualisierung erfolgreich war, sonst False.
      */
     public boolean updateHaustyp(ObjectId id, Haustyp haustyp) {
-        Document doc = new Document("plannnummer", haustyp.getPlannummer())
+        Document doc = new Document("plannummer", haustyp.getPlannummer())
                 .append("hatKeller", haustyp.isHatKeller())
                 .append("hatDachgeschoss", haustyp.isHatDachgeschoss())
                 .append("hatGarage", haustyp.isHatGarage())

@@ -6,7 +6,7 @@ import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import gui.grundriss.GrundrissControl;
 import javafx.stage.Stage;
-
+import validierung.kunde.KundeValidierung;
 import business.DatabaseConnector;
 import business.haustyp.HaustypModel;
 
@@ -55,14 +55,26 @@ public class KundeControl {
 	 */
     public void speichereKunden(Kunde kunde){
       	try{
+      		if (!KundeValidierung.isValidName(kunde.getVorname())) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Vorname ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidName(kunde.getNachname())) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Nachname ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidEmail(kunde.getEmail())) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Email ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidPhoneNumber(kunde.getTelefonnummer())) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Telefonummer ist Invalid");
+      			return;
+      		}
     		kundeModel.addKunde(kunde);
-			// swModel.addSonderwunsch(kunde);
+    		this.kundeView.zeigeErfolg("Speicherung erfolgreich", "Der Kunde wurde in die Datenbank aufgenommen");
     	}
-    	// catch(SQLException exc){
-    	// 	exc.printStackTrace();
-    	// 	this.kundeView.zeigeFehlermeldung("SQLException",
-        //         "Fehler beim Speichern in die Datenbank");
-    	// }
+    
     	catch(Exception exc){
     		exc.printStackTrace();
     		this.kundeView.zeigeFehlermeldung("Exception",
@@ -89,7 +101,24 @@ public class KundeControl {
     
     public void aendereKunden(Kunde kunde) {
 		try{
+			if (!KundeValidierung.isValidName(kunde.getVorname())) {
+      			this.kundeView.zeigeFehlermeldung("Änderung Fehlgeschlagen", "Vorname ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidName(kunde.getNachname())) {
+      			this.kundeView.zeigeFehlermeldung("Änderung Fehlgeschlagen", "Nachname ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidEmail(kunde.getEmail())) {
+      			this.kundeView.zeigeFehlermeldung("Änderung Fehlgeschlagen", "Email ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidPhoneNumber(kunde.getTelefonnummer())) {
+      			this.kundeView.zeigeFehlermeldung("Änderung Fehlgeschlagen", "Telefonummer ist Invalid");
+      			return;
+      		}
     		kundeModel.updateKunde(kunde);
+    		this.kundeView.zeigeErfolg("Änderung Erfolgreich", "Die Änderungen wurden vorgenommen");
     	}
 //    	catch(SQLException exc){
 //    		exc.printStackTrace();

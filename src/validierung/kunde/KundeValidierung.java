@@ -18,7 +18,7 @@ public class KundeValidierung {
 	}
 	
 	public static boolean isValidPhoneNumber(String phonenumber) {
-		Pattern pattern = Pattern.compile("^[0+]\\d{1,14}$");
+		Pattern pattern = Pattern.compile("^(\\+49|0049|0)?[1-9][0-9]{1,14}$");
 		Matcher matcher = pattern.matcher(phonenumber);
 		return matcher.find();
 	}
