@@ -47,6 +47,10 @@ public final class KundeModel {
 		return "Verwaltung der Sonderwunschlisten";
 	}
 	
+	public Kunde getKunde() {
+		return kunde;
+	}
+	
 	/**
 	 * gibt saemtliche Plannummern der Haeuser des Baugebiets heraus.
 	 * @return ObservableList<Integer> , enthaelt saemtliche Plannummern der Haeuser
@@ -69,10 +73,11 @@ public final class KundeModel {
    	    this.kunde = kunde;
 	}
 
-	public Kunde leseKunde(int hausnummer)
+	public void leseKunde(int hausnummer)
 		throws SQLException, Exception{
-		//Kunden aus der DB lesen 
-		return kunde;
+		//Kunden aus der DB lesen
+		Kunde kunde = null;
+		this.kunde= kunde ;
 	}
 
 	public void aendereKunden(Kunde kunde) 

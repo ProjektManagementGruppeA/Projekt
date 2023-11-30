@@ -27,6 +27,7 @@ public class KundeView{
     private Label lblNummerHaus     	= new Label("Plannummer des Hauses");
     private ComboBox<Integer> 
         cmbBxNummerHaus                 = new ComboBox<Integer>();
+    private CheckBox cbxDachgeschoss	= new CheckBox("Hat ein Dachgeschoss");
     private Label lblKundennummer      	= new Label("Kundennummer");
     private TextField txtKundennummer 	= new TextField();
     private Label lblVorname         	= new Label("Vorname");
@@ -81,6 +82,7 @@ public class KundeView{
 	    gridPane.add(cmbBxNummerHaus, 1, 2);
 	    cmbBxNummerHaus.setMinSize(150,  25);
 	    cmbBxNummerHaus.setItems(this.kundeModel.getPlannummern());
+	    gridPane.add(cbxDachgeschoss, 2, 2);
 	    gridPane.add(lblKundennummer, 0, 3);
 	    gridPane.add(txtKundennummer, 1, 3);
 	    gridPane.add(lblVorname, 0, 4);
@@ -129,12 +131,30 @@ public class KundeView{
     }
 
 
-	private void holeInfoDachgeschoss(){ 
+	private boolean holeInfoDachgeschoss(){
+		switch (kundeModel.getKunde().getHausnummer()) {
+		case 1:
+			return false;
+		case 6:
+			return false;
+		case 7:
+			return false;
+		case 14:
+			return false;
+		case 15:
+			return false;
+		case 24:
+			return false;
+		default:
+			return true;
+		}
     }
     
     private void leseKunden(){
     	int hausnummer = cmbBxNummerHaus.getValue();
-    	Kunde kunde = kundeControl.leseKunde(hausnummer);
+    	kundeControl.leseKunde(hausnummer);
+    	Kunde kunde = kundeModel.getKunde();
+    	cbxDachgeschoss.setSelected(holeInfoDachgeschoss());
     	txtKundennummer.setText(kunde.getKundennummer());
     	txtEmail.setText(kunde.getEmail());
     	txtVorname.setText(kunde.getVorname());
@@ -156,7 +176,8 @@ public class KundeView{
     
   	private void aendereKunden(){
   		int hausnummer = cmbBxNummerHaus.getValue();
-    	Kunde kunde = kundeControl.leseKunde(hausnummer);
+    	kundeControl.leseKunde(hausnummer);
+    	Kunde kunde = kundeModel.getKunde();
     	kunde.setVorname(txtVorname.getText());
     	kunde.setNachname(txtNachname.getText());
     	kunde.setTelefonnummer(txtTelefonnummer.getText());

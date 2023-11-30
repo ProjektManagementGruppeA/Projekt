@@ -61,9 +61,9 @@ public class KundeControl {
     	}
     }
 
-	public Kunde leseKunde(int hausnummer) {
+	public void leseKunde(int hausnummer) {
 		try{
-    		return kundeModel.leseKunde(hausnummer);
+    		kundeModel.leseKunde(hausnummer);
     	}
     	catch(SQLException exc){
     		exc.printStackTrace();
@@ -75,7 +75,6 @@ public class KundeControl {
     		this.kundeView.zeigeFehlermeldung("Exception",
                 "Unbekannter Fehler");
     	}
-		return null;
 	}
 
 	public void aendereKunden(Kunde kunde) {
