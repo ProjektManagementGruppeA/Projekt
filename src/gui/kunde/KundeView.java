@@ -131,22 +131,22 @@ public class KundeView{
     }
 
 
-	private boolean holeInfoDachgeschoss(){
-		switch (kundeModel.getKunde().getHausnummer()) {
+	private void holeInfoDachgeschoss(){
+		switch (cmbBxNummerHaus.getValue()) {
 		case 1:
-			return false;
+			cbxDachgeschoss.setSelected(false);
 		case 6:
-			return false;
+			cbxDachgeschoss.setSelected(false);
 		case 7:
-			return false;
+			cbxDachgeschoss.setSelected(false);
 		case 14:
-			return false;
+			cbxDachgeschoss.setSelected(false);
 		case 15:
-			return false;
+			cbxDachgeschoss.setSelected(false);	
 		case 24:
-			return false;
+			cbxDachgeschoss.setSelected(false);	
 		default:
-			return true;
+			cbxDachgeschoss.setSelected(true);
 		}
     }
     
@@ -154,7 +154,6 @@ public class KundeView{
     	int hausnummer = cmbBxNummerHaus.getValue();
     	kundeControl.leseKunde(hausnummer);
     	Kunde kunde = kundeModel.getKunde();
-    	cbxDachgeschoss.setSelected(holeInfoDachgeschoss());
     	txtKundennummer.setText(kunde.getKundennummer());
     	txtEmail.setText(kunde.getEmail());
     	txtVorname.setText(kunde.getVorname());
