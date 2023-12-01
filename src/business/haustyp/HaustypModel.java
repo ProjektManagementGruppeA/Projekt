@@ -71,15 +71,7 @@ public class HaustypModel {
         return documentToHaustyp(doc);
     }
 
-    public Haustyp getHaustypByHausnummer(int hausnummer) {
-        Document doc = collection.find(Filters.eq("plannummer", hausnummer)).first();
-
-        if (doc == null) {
-            return null;
-        }
-
-        return documentToHaustyp(doc);
-    }
+   
 
     /**
      * Gibt eine Liste aller Haustypen in der Datenbank zurück.
