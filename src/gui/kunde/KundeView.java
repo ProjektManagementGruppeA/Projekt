@@ -132,19 +132,26 @@ public class KundeView{
 
 
 	private void holeInfoDachgeschoss(){
+		System.out.println(cmbBxNummerHaus.getValue());
 		switch (cmbBxNummerHaus.getValue()) {
 		case 1:
 			cbxDachgeschoss.setSelected(false);
+			break;
 		case 6:
 			cbxDachgeschoss.setSelected(false);
+			break;
 		case 7:
 			cbxDachgeschoss.setSelected(false);
+			break;
 		case 14:
 			cbxDachgeschoss.setSelected(false);
+			break;
 		case 15:
-			cbxDachgeschoss.setSelected(false);	
+			cbxDachgeschoss.setSelected(false);
+			break;
 		case 24:
-			cbxDachgeschoss.setSelected(false);	
+			cbxDachgeschoss.setSelected(false);
+			break;
 		default:
 			cbxDachgeschoss.setSelected(true);
 		}
