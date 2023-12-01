@@ -4,6 +4,11 @@ package gui.kunde;
 
 import business.kunde.Kunde;
 import business.kunde.KundeModel;
+import business.kundeSonderwunsch.KundeSonderwunsch;
+import business.kundeSonderwunsch.KundeSonderwunschModel;
+import business.sonderwunsch.SonderwunschModel;
+import business.sonderwunschKategorie.SonderwunschKategorieModel;
+import business.sonderwunschKategorie.SonderwunschKategorie;
 import gui.grundriss.GrundrissControl;
 import javafx.stage.Stage;
 import validierung.kunde.KundeValidierung;

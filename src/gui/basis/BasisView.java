@@ -13,13 +13,15 @@ import javafx.stage.Stage;
 public abstract class BasisView {
  
     //---Anfang Attribute der grafischen Oberflaeche---
-	Stage sonderwunschStage;
+	protected Stage sonderwunschStage;
 	private BorderPane borderPane 		= new BorderPane();
 	private GridPane gridPane 		 	= new GridPane();
 	private GridPane gridPaneButtons 	= new GridPane();
    	private Label lblSonderwunsch   	= new Label("Sonderwunsch");
     private Button btnBerechnen 	 	= new Button("Preis berechnen");
     private Button btnSpeichern 	 	= new Button("Speichern");
+    private Button btnExport	 		= new Button("Export as csv");
+   
     //-------Ende Attribute der grafischen Oberflaeche-------
   
    /**
@@ -42,15 +44,18 @@ public abstract class BasisView {
 	    gridPane.setPadding(new Insets(25, 25, 25, 25));
 	    gridPane.setStyle("-fx-background-color: #FED005;");
         gridPaneButtons.setHgap(10);
-	    gridPaneButtons.setPadding(new Insets(25, 25, 25, 200));
+	    gridPaneButtons.setPadding(new Insets(25, 25, 25, 50));
 	    
     	gridPane.add(lblSonderwunsch, 0, 0);
     	lblSonderwunsch.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 	    // Buttons
+    	gridPaneButtons.add(btnExport, 0, 0);
     	gridPaneButtons.add(btnBerechnen, 1, 0);
 	    btnBerechnen.setMinSize(150,  25);
     	gridPaneButtons.add(btnSpeichern, 2, 0);
 	    btnSpeichern.setMinSize(150,  25);
+	    
+	    btnExport.setMinSize(150,  25);
     }  
     
     /* Es muessen die Listener implementiert werden. */
@@ -60,6 +65,9 @@ public abstract class BasisView {
      	});
         btnSpeichern.setOnAction(aEvent -> {
     		speichereSonderwuensche();
+    	});
+        btnExport.setOnAction(aEvent -> {
+    		speichereCsv();
     	});
     }
     
@@ -83,6 +91,8 @@ public abstract class BasisView {
   	
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected abstract void speichereSonderwuensche();
+  	
+  	protected abstract void speichereCsv();
   	
  	
 }

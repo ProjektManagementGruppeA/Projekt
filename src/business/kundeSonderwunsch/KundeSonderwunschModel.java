@@ -1,7 +1,11 @@
 package business.kundeSonderwunsch;
 
 import business.DatabaseConnector;
+import business.sonderwunschKategorie.*;
+import business.sonderwunsch.*;
+
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -12,15 +16,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KundeSonderwunschModel {
+    private static KundeSonderwunschModel instance;
     private MongoCollection<Document> collection;
+    private DatabaseConnector dbconnector;
 
     /**
      * Konstruktor, der eine Verbindung zur Kunden-Sonderwunsch-Sammlung in der MongoDB herstellt.
      *
      * @param connector Der Datenbankverbinder, der die Verbindung zur MongoDB bereitstellt.
      */
-    public KundeSonderwunschModel(DatabaseConnector connector) {
-        collection = connector.getDatabase().getCollection("kundeSonderwuensche");
+    private KundeSonderwunschModel(DatabaseConnector connector) {
+        dbconnector = connector;
+        MongoDatabase database = connector.getDatabase();
+        collection = database.getCollection("kundeSonderwuensche");
+    }
+
+    public static KundeSonderwunschModel getInstance(DatabaseConnector connector) {
+        if (instance == null) {
+            instance = new KundeSonderwunschModel(connector);
+        }
+        return instance;
     }
 
     /**
@@ -31,7 +46,10 @@ public class KundeSonderwunschModel {
      * @param anzahl         Die Anzahl, wie oft der Sonderwunsch vom Kunden gewählt wurde.
      * @return ObjectId Die generierte ID der hinzugefügten Beziehung in der Datenbank.
      */
-    public ObjectId addKundeSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId, int anzahl) {
+    public ObjectId addKundeSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId, int anzahl) throws Exception{
+        if(anzahl == 0) {
+            throw new Exception("Anzahl darf nicht 0 sein");
+        }
         Document doc = new Document("kundeId", kundeId)
                 .append("sonderwunschId", sonderwunschId)
                 .append("anzahl", anzahl);
@@ -51,7 +69,32 @@ public class KundeSonderwunschModel {
             kundeSonderwuensche.add(documentToKundeSonderwunsch(doc));
         }
         return kundeSonderwuensche;
+
+        //Ausgewählen sonderwünsche zuu speicher
     }
+
+    public List<KundeSonderwunsch> getKundeSonderwuenscheByKategorie(ObjectId kundeId, String kategorieName) {
+        List<KundeSonderwunsch> kundeSonderwuenscheByKategorie = new ArrayList<>();
+        // Assuming you have a method in SonderwunschKategorieModel to get category ID by name
+        SonderwunschKategorieModel swkm = SonderwunschKategorieModel.getInstance(dbconnector);
+        SonderwunschModel swm = SonderwunschModel.getInstance(dbconnector);
+        ObjectId kategorieId = swkm.getSonderwunschKategorieByName(kategorieName).getId();
+        if (kategorieId == null) {
+            return kundeSonderwuenscheByKategorie; // Return empty list if category not found
+        }
+
+        // Get the IDs of all Sonderwunsch objects in this category
+        List<ObjectId> sonderwunschIds = swm.getSonderwunschIdsByKategorieId(kategorieId);
+
+        for (ObjectId sonderwunschId : sonderwunschIds) {
+            for (Document doc : collection.find(Filters.and(Filters.eq("kundeId", kundeId), Filters.eq("sonderwunschId", sonderwunschId)))) {
+                kundeSonderwuenscheByKategorie.add(documentToKundeSonderwunsch(doc));
+            }
+        }
+
+        return kundeSonderwuenscheByKategorie;
+    }
+
 
     /**
      * Aktualisiert die Anzahl, wie oft ein Sonderwunsch von einem Kunden gewählt wurde, basierend auf der Beziehungs-ID.
@@ -61,11 +104,41 @@ public class KundeSonderwunschModel {
      * @return true, wenn die Aktualisierung erfolgreich war, andernfalls false.
      */
     public boolean updateKundeSonderwunsch(ObjectId id, int anzahl) {
-        UpdateResult result = collection.updateOne(
+        if (anzahl == 0) {
+            return deleteKundeSonderwunsch(id);
+        }
+        else{
+            UpdateResult result = collection.updateOne(
                 Filters.eq("_id", id),
                 new Document("$set", new Document("anzahl", anzahl))
-        );
-        return result.getModifiedCount() > 0;
+            );
+            return result.getModifiedCount() > 0;
+        }
+    }
+    
+    
+    
+    
+
+    public KundeSonderwunsch getKundeSonderwunschByKundeAndSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId) {
+        Document doc = collection.find(Filters.and(Filters.eq("kundeId", kundeId), Filters.eq("sonderwunschId", sonderwunschId))).first();
+        if (doc == null) {
+            return null; // No matching record found
+        }
+        return documentToKundeSonderwunsch(doc); // Convert the found document to a KundeSonderwunsch object
+    }
+    
+    public boolean updateKundeSonderwunschByKundeAndSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId, int anzahl) {
+        if (anzahl == 0) {
+            return deleteKundeSonderwunschByKundeAndSonderwunsch(kundeId, sonderwunschId);
+        }
+        else{
+            UpdateResult result = collection.updateOne(
+                Filters.and(Filters.eq("kundeId", kundeId), Filters.eq("sonderwunschId", sonderwunschId)),
+                new Document("$set", new Document("anzahl", anzahl))
+            );
+            return result.getModifiedCount() > 0;
+        }
     }
 
     /**
@@ -76,6 +149,11 @@ public class KundeSonderwunschModel {
      */
     public boolean deleteKundeSonderwunsch(ObjectId id) {
         DeleteResult result = collection.deleteOne(Filters.eq("_id", id));
+        return result.getDeletedCount() > 0;
+    }
+
+    public boolean deleteKundeSonderwunschByKundeAndSonderwunsch(ObjectId kundeId, ObjectId sonderwunschId) {
+        DeleteResult result = collection.deleteOne(Filters.and(Filters.eq("kundeId", kundeId), Filters.eq("sonderwunschId", sonderwunschId)));
         return result.getDeletedCount() > 0;
     }
 

@@ -1,5 +1,6 @@
 package business.haustyp;
 import business.DatabaseConnector;
+import business.kunde.KundeModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HaustypModel {
-	private MongoCollection<Document> collection;
+    private MongoCollection<Document> collection;
     private static HaustypModel instance;
 
     /**
@@ -62,6 +63,16 @@ public class HaustypModel {
      */
     public Haustyp getHaustypById(ObjectId id) {
         Document doc = collection.find(Filters.eq("_id", id)).first();
+
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToHaustyp(doc);
+    }
+
+    public Haustyp getHaustypByHausnummer(int hausnummer) {
+        Document doc = collection.find(Filters.eq("plannummer", hausnummer)).first();
 
         if (doc == null) {
             return null;

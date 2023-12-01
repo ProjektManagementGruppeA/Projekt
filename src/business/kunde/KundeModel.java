@@ -98,6 +98,37 @@ public class KundeModel {
     }
 
     /**
+     * Ermittelt ein Kunde-Objekt anhand einer Hausnummer.
+     *
+     * @param hausnummer Die zu suchende Hausnummer.
+     * @return Kunde Das gefundene Kundenobjekt, andernfalls null.
+     */
+    public Kunde getKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return null;
+        }
+
+        Document doc = collection.find(Filters.eq("haustypId", haustyp.getId())).first();
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToKunde(doc);
+    }
+
+    public boolean deleteKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return false;
+        }
+
+        DeleteResult result = collection.deleteOne(Filters.eq("haustypId", haustyp.getId()));
+        return result.getDeletedCount() > 0;
+        
+    }
+
+    /**
      * Ermittelt einen Kunden anhand seiner Datenbank-ID.
      *
      * @param id Die ID des Kunden.
@@ -143,7 +174,6 @@ public class KundeModel {
     /**
      * Aktualisiert die Informationen eines Kunden in der Datenbank.
      *
-     * @param id Der ID des zu aktualisierenden Kunden.
      * @param kunde Die neuen Informationen des Kunden.
      * @return boolean Wahr, wenn das Update erfolgreich war, falsch andernfalls.
      */
