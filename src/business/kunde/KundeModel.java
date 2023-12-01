@@ -1,71 +1,222 @@
 package business.kunde;
 
-import java.sql.SQLException;
-import javafx.collections.*;
-  
-/** 
- * Klasse, welche das Model des Grundfensters mit den Kundendaten enthaelt.
- */
-public final class KundeModel {
-	
-	// enthaelt den aktuellen Kunden
-	private Kunde kunde;
-	
-	/* enthaelt die Plannummern der Haeuser, diese muessen vielleicht noch
-	   in eine andere Klasse verschoben werden */
-	ObservableList<Integer> plannummern = 
-	    FXCollections.observableArrayList(
-		0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24);
-	
+import business.DatabaseConnector;
+import business.haustyp.Haustyp;
+import business.haustyp.HaustypModel;
 
-	// enthaelt das einzige KundeModel-Objekt
-	private static KundeModel kundeModel;
-	
-	// privater Konstruktor zur Realisierung des Singleton-Pattern
-	private KundeModel(){
-		super();
-	}
-	
-	/**
-	 *  Methode zum Erhalt des einzigen KundeModel-Objekts.
-	 *  Das Singleton-Pattern wird realisiert.
-	 *  @return KundeModel, welches das einzige Objekt dieses
-	 *          Typs ist.
-	 */
-	public static KundeModel getInstance(){
-		if(kundeModel == null){
-			kundeModel = new KundeModel();
-		}
-		return kundeModel;	
-	}
-	
-	/**
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class KundeModel {
+    private static KundeModel instance; // Die Singleton-Instanz
+    private MongoCollection<Document> collection;
+    private HaustypModel haustypModel;
+
+    // Privater Konstruktor verhindert Instanziierung von außen
+    private KundeModel(DatabaseConnector connector) {
+        MongoDatabase database = connector.getDatabase();
+        collection = database.getCollection("kunden");
+        this.haustypModel = HaustypModel.getInstance(connector);
+    }
+
+    /**
+     * Statische Methode, um die einzige Instanz der Klasse zu erhalten.
+     * @param connector Eine Instanz des DatabaseConnector für die Datenbankverbindung.
+     * @return KundeDAO Die einzige Instanz dieser Klasse.
+     */
+    public static KundeModel getInstance(DatabaseConnector connector) {
+        if (instance == null) {
+            instance = new KundeModel(connector);
+        }
+        return instance;
+    }
+
+    /**
+     * Speichert ein Kunde-Objekt in der Datenbank.
+     * 
+     * @param kunde Das zu speichernde Kunde-Objekt.
+     * @return ObjectId Die Datenbank-ID des gespeicherten Kunden.
+     * @throws IllegalArgumentException, wenn das Kunde-Objekt null ist.
+     */
+    public ObjectId addKunde(Kunde kunde) throws Exception{
+        Document doc = new Document("kundennummer", kunde.getKundennummer())
+                .append("haustypId", kunde.getHaustypId())
+                .append("vorname", kunde.getVorname())
+                .append("nachname", kunde.getNachname())
+                .append("telefonnummer", kunde.getTelefonnummer())
+                .append("email", kunde.getEmail());
+
+        Document haustyp = collection.find(Filters.eq("haustypId", kunde.getHaustypId())).first();
+
+        if (haustyp != null){
+            throw new Exception("Kunde mit der Hausnummer existiert bereits");
+        }
+        else if (this.getKundeByKundennummer(kunde.getKundennummer()) != null){
+            throw new Exception("Kunde mit der Kundennummer existiert bereits");
+        }
+        else if (this.getKundeByEmail(kunde.getEmail()) != null){
+            throw new Exception("Kunde mit der E-Mail Adresse existiert bereits");
+        }
+        else{
+            collection.insertOne(doc);
+            return doc.getObjectId("_id");
+        }
+    }
+
+    /**
+     * Ermittelt einen Kunden anhand seiner Kundennummer.
+     *
+     * @param kundennummer Die Kundennummer des zu suchenden Kunden.
+     * @return Kunde Das Kundenobjekt, das der angegebenen Kundennummer entspricht.
+     */
+    public Kunde getKundeByKundennummer(String kundennummer) {
+        Document doc = collection.find(Filters.eq("kundennummer", kundennummer)).first();
+        return documentToKunde(doc);
+    }
+
+    /**
+     * Ermittelt ein Kunde-Objekt anhand einer Hausnummer.
+     *
+     * @param hausnummer Die zu suchende Hausnummer.
+     * @return Kunde Das gefundene Kundenobjekt, andernfalls null.
+     */
+    public Kunde getKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return null;
+        }
+
+        Document doc = collection.find(Filters.eq("haustypId", haustyp.getId())).first();
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToKunde(doc);
+    }
+
+    public boolean deleteKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return false;
+        }
+
+        DeleteResult result = collection.deleteOne(Filters.eq("haustypId", haustyp.getId()));
+        return result.getDeletedCount() > 0;
+        
+    }
+
+    /**
+     * Ermittelt einen Kunden anhand seiner Datenbank-ID.
+     *
+     * @param id Die ID des Kunden.
+     * @return Kunde Das Kundenobjekt mit der angegebenen ID.
+     */
+    public Kunde getKundeById(ObjectId id) {
+        Document doc = collection.find(Filters.eq("_id", id)).first();
+        return documentToKunde(doc);
+    }
+
+    /**
+     * Ermittelt einen Kunden anhand seiner E-Mail-Adresse.
+     *
+     * @param email Die E-Mail-Adresse des Kunden.
+     * @return Kunde Das Kundenobjekt mit der angegebenen E-Mail-Adresse.
+     */
+    public Kunde getKundeByEmail(String email) {
+        Document doc = collection.find(Filters.eq("email", email)).first();
+        return documentToKunde(doc);
+    }
+
+    /**
+     * Ruft alle Kunden aus der Datenbank ab.
+     *
+     * @return List<Kunde> Eine Liste aller Kunden.
+     */
+    public List<Kunde> getAllKunden() {
+        List<Kunde> kunden = new ArrayList<>();
+        MongoCursor<Document> cursor = collection.find().iterator();
+        
+        try {
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                kunden.add(documentToKunde(doc));
+            }
+        } finally {
+            cursor.close();
+        }
+        
+        return kunden;
+    }
+
+    /**
+     * Aktualisiert die Informationen eines Kunden in der Datenbank.
+     *
+     * @param kunde Die neuen Informationen des Kunden.
+     * @return boolean Wahr, wenn das Update erfolgreich war, falsch andernfalls.
+     */
+    public boolean updateKunde(Kunde kunde) {
+        Document doc = new Document("kundennummer", kunde.getKundennummer())
+                .append("haustypId", kunde.getHaustypId())
+                .append("vorname", kunde.getVorname())
+                .append("nachname", kunde.getNachname())
+                .append("telefonnummer", kunde.getTelefonnummer())
+                .append("email", kunde.getEmail());
+
+        UpdateResult result = collection.updateOne(Filters.eq("_id", kunde.getId()), new Document("$set", doc));
+        return result.getModifiedCount() > 0;
+    }
+
+    /**
+     * Löscht einen Kunden aus der Datenbank unter Verwendung seiner ID.
+     *
+     * @param id Die ID des zu löschenden Kunden.
+     * @return boolean Wahr, wenn der Kunde gelöscht wurde, falsch andernfalls.
+     */
+    public boolean deleteKunde(ObjectId id) {
+        DeleteResult result = collection.deleteOne(Filters.eq("_id", id));
+        return result.getDeletedCount() > 0;
+    }
+
+    /**
+     * Wandelt ein Document-Objekt in ein Kunde-Objekt um.
+     *
+     * @param doc Das Document-Objekt aus der MongoDB, das umgewandelt wird.
+     * @return kunde Ein Kunde-Objekt, das aus dem Document erstellt wurde.
+     */
+    private Kunde documentToKunde(Document doc) {
+        if (doc == null) {
+            return null;
+        }
+
+        ObjectId haustypId = doc.getObjectId("haustypId");
+        String kundennummer = doc.getString("kundennummer");
+        // int hausnummer = doc.getInteger("hausnummer");
+        String vorname = doc.getString("vorname");
+        String nachname = doc.getString("nachname");
+        String telefonnummer = doc.getString("telefonnummer");
+        String email = doc.getString("email");
+        ObjectId id = doc.getObjectId("_id");
+
+        Kunde kunde = new Kunde(kundennummer, haustypId, vorname, nachname, telefonnummer, email);
+        kunde.setId(id);
+
+        return kunde;
+    }
+
+    /**
 	 * gibt die Ueberschrift zum Grundfenster mit den Kundendaten heraus
 	 * @return String, Ueberschrift zum Grundfenster mit den Kundendaten 
 	 */
 	public String getUeberschrift(){
 		return "Verwaltung der Sonderwunschlisten";
 	}
-	
-	/**
-	 * gibt saemtliche Plannummern der Haeuser des Baugebiets heraus.
-	 * @return ObservableList<Integer> , enthaelt saemtliche Plannummern der Haeuser
-	 */
-	public ObservableList<Integer> getPlannummern(){
-		return this.plannummern; 
-	}
-		 	
-	// ---- Datenbankzugriffe -------------------
-	
-	/**
-	 * speichert ein Kunde-Objekt in die Datenbank
-	 * @param kunde, Kunde-Objekt, welches zu speichern ist
-	 * @throws SQLException, Fehler beim Speichern in die Datenbank
-	 * @throws Exception, unbekannter Fehler
-	 */
-	public void speichereKunden(Kunde kunde)
-	    throws SQLException, Exception{
-        // Speicherung des Kunden in der DB
-   	    this.kunde = kunde;
-	}  
 }

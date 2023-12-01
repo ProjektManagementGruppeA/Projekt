@@ -30,10 +30,10 @@ public class KundeView{
     private Label lblVorname         	= new Label("Vorname");
     private TextField txtVorname     	= new TextField();   
     private Button btnAnlegen	 	  	= new Button("Anlegen");
-    private Button btnAendern 	      	= new Button("Ändern");
-    private Button btnLoeschen 	 		= new Button("Löschen");
+    private Button btnAendern 	      	= new Button("ï¿½ndern");
+    private Button btnLoeschen 	 		= new Button("Lï¿½schen");
     private MenuBar mnBar 			  	= new MenuBar();
-    private Menu mnSonderwuensche    	= new Menu("Sonderwünsche");
+    private Menu mnSonderwuensche    	= new Menu("Sonderwï¿½nsche");
     private MenuItem mnItmGrundriss  	= new MenuItem("Grundrissvarianten");
     //-------Ende Attribute der grafischen Oberflaeche-------
   
@@ -71,7 +71,7 @@ public class KundeView{
 	    gridPane.add(lblNummerHaus, 0, 2);
 	    gridPane.add(cmbBxNummerHaus, 1, 2);
 	    cmbBxNummerHaus.setMinSize(150,  25);
-	    cmbBxNummerHaus.setItems(this.kundeModel.getPlannummern());
+	    // cmbBxNummerHaus.setItems(this.kundeModel.getPlannummern());
 	    gridPane.add(lblVorname, 0, 3);
 	    gridPane.add(txtVorname, 1, 3);
 	    // Buttons
@@ -114,10 +114,10 @@ public class KundeView{
     }
     
     private void legeKundenAn(){
-         Kunde kunde = null;
+        Kunde kunde = null;
          // Objekt kunde fuellen
-         kundeControl.speichereKunden(kunde);
-   	}
+        kundeControl.speichereKunden(kunde);
+	}
     
   	private void aendereKunden(){
    	}
