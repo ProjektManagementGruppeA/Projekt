@@ -110,7 +110,7 @@ public class HaustypModel {
      * @return boolean True, wenn die Aktualisierung erfolgreich war, sonst False.
      */
     public boolean updateHaustyp(ObjectId id, Haustyp haustyp) {
-        Document doc = new Document("plannnummer", haustyp.getPlannummer())
+        Document doc = new Document("plannummer", haustyp.getPlannummer())
                 .append("hatKeller", haustyp.isHatKeller())
                 .append("hatDachgeschoss", haustyp.isHatDachgeschoss())
                 .append("hatGarage", haustyp.isHatGarage())
@@ -148,6 +148,16 @@ public class HaustypModel {
         haustyp.setId(id);
 
         return haustyp;
+    }
+    
+    public Haustyp getHaustypByHausnummer(int hausnummer) {
+        Document doc = collection.find(Filters.eq("plannummer", hausnummer)).first();
+
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToHaustyp(doc);
     }
 
     /* enthaelt die Plannummern der Haeuser, diese muessen vielleicht noch

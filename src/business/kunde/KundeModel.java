@@ -82,6 +82,20 @@ public class KundeModel {
         Document doc = collection.find(Filters.eq("kundennummer", kundennummer)).first();
         return documentToKunde(doc);
     }
+    
+    public Kunde getKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return null;
+        }
+
+        Document doc = collection.find(Filters.eq("haustypId", haustyp.getId())).first();
+        if (doc == null) {
+            return null;
+        }
+
+        return documentToKunde(doc);
+    }
 
     /**
      * Ermittelt ein Kunde-Objekt anhand einer Hausnummer.
@@ -184,6 +198,17 @@ public class KundeModel {
     public boolean deleteKunde(ObjectId id) {
         DeleteResult result = collection.deleteOne(Filters.eq("_id", id));
         return result.getDeletedCount() > 0;
+    }
+    
+    public boolean deleteKundeByHausnummer(int hausnummer) {
+        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        if (haustyp == null) {
+            return false;
+        }
+
+        DeleteResult result = collection.deleteOne(Filters.eq("haustypId", haustyp.getId()));
+        return result.getDeletedCount() > 0;
+        
     }
 
     /**
