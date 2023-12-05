@@ -44,11 +44,12 @@ public class KundeView{
     private Label lblEmail      		= new Label("E-Mail");
     private TextField txtEmail			= new TextField();
     private Button btnAnlegen	 	  	= new Button("Anlegen");
-    private Button btnAendern 	      	= new Button("�ndern");
+    private Button btnAendern 	      	= new Button("ändern");
     private Button btnLoeschen 	 		= new Button("L�schen");
     private MenuBar mnBar 			  	= new MenuBar();
-    private Menu mnSonderwuensche    	= new Menu("Sonderw�nsche");
+    private Menu mnSonderwuensche    	= new Menu("Sonderwünsche");
     private MenuItem mnItmGrundriss  	= new MenuItem("Grundrissvarianten");
+    private MenuItem mnItmFensterUndAussentueren  	= new MenuItem("Fenster und Außentüren");
     private MenuItem mnItmCsvExport 	= new MenuItem("Csv Export");
     //-------Ende Attribute der grafischen Oberflaeche-------
   
@@ -113,6 +114,7 @@ public class KundeView{
 	    borderPane.setTop(mnBar);
 	    mnBar.getMenus().add(mnSonderwuensche);
 	    mnSonderwuensche.getItems().add(mnItmGrundriss);
+	    mnSonderwuensche.getItems().add(mnItmFensterUndAussentueren);
 	    mnSonderwuensche.getItems().add(mnItmCsvExport);
     }
 
@@ -135,7 +137,10 @@ public class KundeView{
            	loescheKunden();
 	    });
       	mnItmGrundriss.setOnAction(aEvent-> {
- 	        kundeControl.oeffneGrundrissControl(); 
+ 	        kundeControl.oeffneGrundrissControl(); //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
+	    });
+    	mnItmFensterUndAussentueren.setOnAction(aEvent-> { //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
+ 	        kundeControl.oeffneFensterUndAussentuerenControl(); 
 	    });
       	mnItmCsvExport.setOnAction(aEvent-> {
        		exportAsCsv();
