@@ -9,6 +9,7 @@ import business.kundeSonderwunsch.KundeSonderwunschModel;
 import business.sonderwunsch.SonderwunschModel;
 import business.sonderwunschKategorie.SonderwunschKategorieModel;
 import business.sonderwunschKategorie.SonderwunschKategorie;
+import gui.fensterUndAussenentueren.FensterUndAussentuerenControl;
 import gui.grundriss.GrundrissControl;
 import javafx.stage.Stage;
 import validierung.kunde.KundeValidierung;
@@ -29,6 +30,7 @@ public class KundeControl {
     /* das GrundrissControl-Objekt fuer die Sonderwuensche
        zum Grundriss zu dem Kunden */
     private GrundrissControl grundrissControl;
+    private FensterUndAussentuerenControl fensterUndAussentuerenControl;
     
     /**
 	 * erzeugt ein ControlObjekt inklusive View-Objekt und Model-Objekt zum 
@@ -52,6 +54,14 @@ public class KundeControl {
     		this.grundrissControl = new GrundrissControl(kundeModel);
       	}
     	this.grundrissControl.oeffneGrundrissView();
+    }
+    
+    
+    public void oeffneFensterUndAussentuerenControl(){
+    	if (this.fensterUndAussentuerenControl == null){
+    		this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel);
+      	}
+    	this.fensterUndAussentuerenControl.oeffneGrundrissView();
     }
     
 	/**
