@@ -1,4 +1,4 @@
-package gui.grundriss;
+package gui.fensterUndAussenentueren;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +13,7 @@ import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
 import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
+import gui.grundriss.GrundrissView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -20,10 +21,10 @@ import javafx.stage.Stage;
  * Klasse, welche das Fenster mit den Sonderwuenschen zu den Grundriss-Varianten
  * kontrolliert.
  */
-public final class GrundrissControl {
+public final class FensterUndAussentuerenControl {
 	
 	// das View-Objekt des Grundriss-Fensters
-	private GrundrissView grundrissView;
+	private FensterUndAussentuerenView fensterUndAussentuerenView;
 
 	
 
@@ -32,17 +33,17 @@ public final class GrundrissControl {
 	 * Fenster fuer die Sonderwuensche zum Grundriss.
 	 * @param grundrissStage, Stage fuer das View-Objekt zu den Sonderwuenschen zum Grundriss
 	 */
-	public GrundrissControl(KundeModel kundeModel){  
-	   	Stage stageGrundriss = new Stage();
-    	stageGrundriss.initModality(Modality.APPLICATION_MODAL);
-    	this.grundrissView = new GrundrissView(this, stageGrundriss); // ObjectId kunde
+	public FensterUndAussentuerenControl(KundeModel kundeModel){  
+	   	Stage stageFensterUndAussentueren= new Stage();
+	   	stageFensterUndAussentueren.initModality(Modality.APPLICATION_MODAL);
+    	this.fensterUndAussentuerenView = new FensterUndAussentuerenView(this, stageFensterUndAussentueren); // ObjectId kunde
 	}
 	    
 	/**
 	 * macht das GrundrissView-Objekt sichtbar.
 	 */
 	public void oeffneGrundrissView(){ 
-		this.grundrissView.oeffneGrundrissView();
+		this.fensterUndAussentuerenView.oeffneFensterUndAussentuerenView();
 	}
 	
 	
@@ -63,20 +64,20 @@ public final class GrundrissControl {
 	
 	{
 		DatabaseConnector connector = DatabaseConnector.getInstance();
-		List<KundeSonderwunsch> list = KundeSonderwunschModel.getInstance(connector).getKundeSonderwuenscheByKategorie(kunde, "Grundriss");
+		List<KundeSonderwunsch> list = KundeSonderwunschModel.getInstance(connector).getKundeSonderwuenscheByKategorie(kunde, "Fenster und Außentüren");
 		
 		return list; 
 	}
 	
-	public int[] leseGrundrissSonderwuenschePreise() {
+	public int[] leseFensterUndAussentuerenSonderwuenschePreise() {
 		
 		DatabaseConnector connector = DatabaseConnector.getInstance();
 		
 		
-	    List<Sonderwunsch> sonderwunsch = SonderwunschModel.getInstance(connector).getSonderwunschByKategorie("Grundriss");
+	    List<Sonderwunsch> sonderwunsch = SonderwunschModel.getInstance(connector).getSonderwunschByKategorie("Fenster und Außentüren");
 	    
 	    System.out.println(sonderwunsch);
-	    int[] preise = new int[6];
+	    int[] preise = new int[9];
 	    for(int i = 0; i<sonderwunsch.size(); i++) {
 	    	preise[i] = sonderwunsch.get(i).getPreis();
 	    	System.out.println(sonderwunsch.get(i).getPreis());
