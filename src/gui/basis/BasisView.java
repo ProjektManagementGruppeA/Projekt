@@ -7,6 +7,8 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 /**
  * Klasse, welche die Basis fuer die Fenster zu den Sonderwuenschen bereitstellt.
  */
@@ -92,7 +94,7 @@ public abstract class BasisView {
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected abstract void speichereSonderwuensche();
   	
-  	protected abstract void speichereCsv();
+  	protected abstract void speichereCsv() throws IOException;
   	
  	
 }

@@ -11,6 +11,7 @@ import business.sonderwunschKategorie.SonderwunschKategorieModel;
 import business.sonderwunschKategorie.SonderwunschKategorie;
 import gui.fensterUndAussenentueren.FensterUndAussentuerenControl;
 import gui.grundriss.GrundrissControl;
+import gui.innentueren.InnentuerenControl;
 import javafx.stage.Stage;
 import validierung.kunde.KundeValidierung;
 import business.DatabaseConnector;
@@ -31,6 +32,7 @@ public class KundeControl {
        zum Grundriss zu dem Kunden */
     private GrundrissControl grundrissControl;
     private FensterUndAussentuerenControl fensterUndAussentuerenControl;
+	private InnentuerenControl innentuerenControl;
     
     /**
 	 * erzeugt ein ControlObjekt inklusive View-Objekt und Model-Objekt zum 
@@ -63,6 +65,14 @@ public class KundeControl {
       	}
     	this.fensterUndAussentuerenControl.oeffneGrundrissView();
     }
+    
+    public void oeffneInnentuerenControl() {
+    	if (this.innentuerenControl == null){
+    		this.innentuerenControl = new InnentuerenControl(kundeModel);
+      	}
+    	this.innentuerenControl.oeffneInnentuerenView();
+		
+	}
     
 	/**
 	 * speichert ein Kunde-Objekt in die Datenbank
@@ -164,4 +174,6 @@ public class KundeControl {
     		return false;
     	}
     }
+
+	
 }

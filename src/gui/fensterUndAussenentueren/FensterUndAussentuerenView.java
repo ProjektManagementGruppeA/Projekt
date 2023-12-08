@@ -35,8 +35,6 @@ public class FensterUndAussentuerenView extends BasisView{
 	private int[] preise;
 	
 	
-   
-    //---Anfang Attribute der grafischen Oberflaeche---
 	//---Anfang Attribute der grafischen Oberflaeche---
 	private Label lblSchiebetuerenEGTerrasse = new Label("Schiebetüren im EG zur Terrasse");
 	private TextField txtPreisSchiebetuerenEGTerrasse = new TextField();
@@ -197,7 +195,7 @@ public class FensterUndAussentuerenView extends BasisView{
 		        
 		        System.out.println(isSelected);
 	    }
-	    System.out.println("Daten gespeichert");
+	    System.out.println("Daten gespeichert");}
 	}
    
   
