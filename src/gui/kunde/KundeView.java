@@ -50,6 +50,7 @@ public class KundeView{
     private Menu mnSonderwuensche    	= new Menu("Sonderwünsche");
     private MenuItem mnItmGrundriss  	= new MenuItem("Grundrissvarianten");
     private MenuItem mnItmFensterUndAussentueren  	= new MenuItem("Fenster und Außentüren");
+    private MenuItem mnItmInnentueren	= new MenuItem("Innentüren");
     private MenuItem mnItmCsvExport 	= new MenuItem("Csv Export");
     //-------Ende Attribute der grafischen Oberflaeche-------
   
@@ -115,6 +116,7 @@ public class KundeView{
 	    mnBar.getMenus().add(mnSonderwuensche);
 	    mnSonderwuensche.getItems().add(mnItmGrundriss);
 	    mnSonderwuensche.getItems().add(mnItmFensterUndAussentueren);
+	    mnSonderwuensche.getItems().add(mnItmInnentueren);
 	    mnSonderwuensche.getItems().add(mnItmCsvExport);
     }
 
@@ -142,6 +144,9 @@ public class KundeView{
     	mnItmFensterUndAussentueren.setOnAction(aEvent-> { //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
  	        kundeControl.oeffneFensterUndAussentuerenControl(); 
 	    });
+    	mnItmInnentueren.setOnAction(aEvent -> {
+    		kundeControl.oeffneInnentuerenControl();
+    	});
       	mnItmCsvExport.setOnAction(aEvent-> {
        		exportAsCsv();
        	});
