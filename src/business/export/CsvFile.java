@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CsvFile implements externalFile {
+public class CsvFile implements ExternalFile {
 
     protected String fileName;
     protected String[][] input;
-    public csvFile(String fileName, String[][]input) {
+    public CsvFile(String fileName, String[][]input) {
         this.fileName = fileName;
         this.input = input;
     }
