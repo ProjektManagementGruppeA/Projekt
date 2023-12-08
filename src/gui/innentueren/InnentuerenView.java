@@ -91,7 +91,12 @@ public class InnentuerenView extends BasisView{
 		                     chckBxGlasausschnittMilch.isSelected(),
 		                     chckBxInnentuerGarage.isSelected()
 		};
-		this.innentuerenControl.speichereSonderwuensche(checked);
+		try {
+			this.innentuerenControl.speichereSonderwuensche(checked);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

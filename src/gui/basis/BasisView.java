@@ -69,7 +69,12 @@ public abstract class BasisView {
     		speichereSonderwuensche();
     	});
         btnExport.setOnAction(aEvent -> {
-    		speichereCsv();
+    		try {
+				speichereCsv();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	});
     }
     
