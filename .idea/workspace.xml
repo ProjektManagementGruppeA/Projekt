@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="51958a53-0a2a-43d0-8fd7-2e5a5ab6efd2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/business/export/CsvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/business/export/CsvFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/business/export/CsvFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/business/export/CsvFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/business/export/FileFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/business/export/FileFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/innentueren/InnentuerenControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/innentueren/InnentuerenControl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +32,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Innentüren-CSV-Export",
+    "git-widget-placeholder": "CSV-Export-Factory",
     "last_opened_file_path": "C:/Users/Chris/.jdks/javafx-sdk-21.0.1/lib",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
