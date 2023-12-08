@@ -6,6 +6,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class InnentuerenView extends BasisView{
 	
 	private InnentuerenControl innentuerenControl;
@@ -94,7 +96,7 @@ public class InnentuerenView extends BasisView{
 	}
 
 	@Override
-	protected void speichereCsv() {
+	protected void speichereCsv() throws IOException {
 		this.innentuerenControl.speichereCsv();
 		
 	}

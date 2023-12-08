@@ -6,15 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="51958a53-0a2a-43d0-8fd7-2e5a5ab6efd2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/business/export/CsvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/business/export/CsvFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projekt.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Projekt.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/business/export/CsvFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/business/export/CsvFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/business/export/FileFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/business/export/FileFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/basis/BasisView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/basis/BasisView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/innentueren/InnentuerenControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/innentueren/InnentuerenControl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/innentueren/InnentuerenView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/innentueren/InnentuerenView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,18 +36,23 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "Innentüren-CSV-Export",
-    "last_opened_file_path": "C:/Users/Chris/.jdks/javafx-sdk-21.0.1/lib",
+    "last_opened_file_path": "C:/Users/Chris/Downloads/mongo-java-driver-3.8.2-javadoc.jar",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
