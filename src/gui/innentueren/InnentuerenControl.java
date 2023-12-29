@@ -52,23 +52,21 @@ public class InnentuerenControl {
 
 	}
 
-	public void speichereSonderwuensche(boolean[] checked) throws Exception {
+	public void speichereSonderwuensche(int[] checked){
 		List<KundeSonderwunsch> kundesonderwünsche = this.kundeSonderwunschModel.getKundeSonderwuenscheByKategorie(this.kunde.getId(), "Innentüren");
-		if (kundesonderwünsche != null) {
-			for (int i = 0; i < checked.length; i++) {
-				
-			}
+		if (InnentürenValidierung.validiereGlasKlar(checked[0])) {
+			
 		}
-		Sonderwunsch sonderwunsch;
-		for (int i = 0; i < checked.length; i++) {
-			if (checked[i]) {
-				this.kundeSonderwunschModel.addKundeSonderwunsch(kunde.getId(), sonderwuensche.get(i).getId(), 1);
-			}
+		else {
+			innentuerenView.zeigeFehlermeldung("Fehler", "");
 		}
-		
-	
-		
-		
+		if (InnentürenValidierung.validiereGlasMilch(checked[1])) {
+			
+		}
+		if (InnentürenValidierung.validiereGarage(checked[2])) {
+			
+		}
+		kundesonderwünsche.forEach((ks) -> kundeSonderwunschModel.deleteKundeSonderwunsch(ks.getKundeId()));
 	}
 
 	public void speichereCsv() {
