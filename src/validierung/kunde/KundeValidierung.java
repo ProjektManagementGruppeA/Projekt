@@ -26,15 +26,9 @@ public class KundeValidierung {
 	}
 	
 	public static boolean isValidKundennummer(String kundenummer, KundeModel kundemodel) {
-		Pattern pattern = Pattern.compile("\\D");
+		Pattern pattern = Pattern.compile("^\\d+$");
 		Matcher matcher = pattern.matcher(kundenummer);
-		if (matcher.find()) {
-			return false;
-		}
-		if (kundenummer.compareTo("") == 0) {
-			return false;
-		}
-		return true;
+		return matcher.find();
 		
 	}
 }
