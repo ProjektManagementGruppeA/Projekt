@@ -1,5 +1,6 @@
 package gui.grundriss;
 
+import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -12,16 +13,18 @@ public final class GrundrissControl {
 	
 	// das View-Objekt des Grundriss-Fensters
 	private GrundrissView grundrissView;
+	private Kunde kunde;
 
 	/**
 	 * erzeugt ein ControlObjekt inklusive View-Objekt und Model-Objekt zum 
 	 * Fenster fuer die Sonderwuensche zum Grundriss.
 	 * @param grundrissStage, Stage fuer das View-Objekt zu den Sonderwuenschen zum Grundriss
 	 */
-	public GrundrissControl(KundeModel kundeModel){  
+	public GrundrissControl(KundeModel kundeModel, Kunde kunde){  
 	   	Stage stageGrundriss = new Stage();
     	stageGrundriss.initModality(Modality.APPLICATION_MODAL);
     	this.grundrissView = new GrundrissView(this, stageGrundriss);
+    	this.kunde = kunde;
 	}
 	    
 	/**

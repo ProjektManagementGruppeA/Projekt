@@ -3,6 +3,8 @@ package validierung.kunde;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import business.kunde.KundeModel;
+
 public class KundeValidierung {
 	
 	public static boolean isValidEmail(String email) {
@@ -21,6 +23,19 @@ public class KundeValidierung {
 		Pattern pattern = Pattern.compile("^(\\+49|0049|0)?[1-9][0-9]{1,14}$");
 		Matcher matcher = pattern.matcher(phonenumber);
 		return matcher.find();
+	}
+	
+	public static boolean isValidKundennummer(String kundenummer, KundeModel kundemodel) {
+		Pattern pattern = Pattern.compile("\\D");
+		Matcher matcher = pattern.matcher(kundenummer);
+		if (matcher.find()) {
+			return false;
+		}
+		if (kundenummer.compareTo("") == 0) {
+			return false;
+		}
+		return true;
+		
 	}
 }
 
