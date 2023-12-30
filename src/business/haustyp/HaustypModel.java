@@ -1,5 +1,6 @@
 package business.haustyp;
 import business.DatabaseConnector;
+import business.kunde.KundeModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HaustypModel {
-	private MongoCollection<Document> collection;
+    private MongoCollection<Document> collection;
     private static HaustypModel instance;
 
     /**
@@ -69,6 +70,8 @@ public class HaustypModel {
 
         return documentToHaustyp(doc);
     }
+
+   
 
     /**
      * Gibt eine Liste aller Haustypen in der Datenbank zurück.

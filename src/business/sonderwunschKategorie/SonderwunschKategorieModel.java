@@ -38,6 +38,14 @@ public class SonderwunschKategorieModel {
         return documentToSonderwunschKategorie(doc);
     }
 
+    public SonderwunschKategorie getSonderwunschKategorieByName(String name) {
+        Document doc = collection.find(Filters.eq("name", name)).first();
+        if (doc == null) {
+            return null;
+        }
+        return documentToSonderwunschKategorie(doc);
+    }
+
     public List<SonderwunschKategorie> getAllSonderwunschKategorie(){
         List<SonderwunschKategorie> kategorien = new ArrayList<>();
         for (Document doc : collection.find()) {
@@ -66,6 +74,12 @@ public class SonderwunschKategorieModel {
 
         return sk;
 
+    }
+
+    public ObjectId addSonderwunschKategorie(SonderwunschKategorie sonderwunschkategorie) {
+        Document doc = new Document("name", sonderwunschkategorie.getName());
+        collection.insertOne(doc);
+        return doc.getObjectId("_id");
     }
 
 

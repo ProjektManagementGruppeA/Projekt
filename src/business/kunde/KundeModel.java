@@ -48,6 +48,12 @@ public class KundeModel {
      * @throws IllegalArgumentException, wenn das Kunde-Objekt null ist.
      */
     public ObjectId addKunde(Kunde kunde) throws Exception{
+	// Überprüfen, ob die Kundennummer bereits existiert
+        Document existingKunde = collection.find(Filters.eq("kundennummer", kunde.getKundennummer())).first();
+        if (existingKunde != null) {
+            throw new IllegalArgumentException("Kundennummer existiert bereits.");
+        }
+	    
         Document doc = new Document("kundennummer", kunde.getKundennummer())
                 .append("haustypId", kunde.getHaustypId())
                 .append("vorname", kunde.getVorname())
@@ -83,6 +89,15 @@ public class KundeModel {
         return documentToKunde(doc);
     }
     
+
+   
+
+    /**
+     * Ermittelt ein Kunde-Objekt anhand einer Hausnummer.
+     *
+     * @param hausnummer Die zu suchende Hausnummer.
+     * @return Kunde Das gefundene Kundenobjekt, andernfalls null.
+     */
     public Kunde getKundeByHausnummer(int hausnummer) {
         Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
         if (haustyp == null) {
@@ -96,6 +111,8 @@ public class KundeModel {
 
         return documentToKunde(doc);
     }
+
+  
 
     /**
      * Ermittelt einen Kunden anhand seiner Datenbank-ID.
@@ -143,11 +160,20 @@ public class KundeModel {
     /**
      * Aktualisiert die Informationen eines Kunden in der Datenbank.
      *
-     * @param id Der ID des zu aktualisierenden Kunden.
      * @param kunde Die neuen Informationen des Kunden.
      * @return boolean Wahr, wenn das Update erfolgreich war, falsch andernfalls.
      */
-    public boolean updateKunde(Kunde kunde) {
+    public boolean updateKunde(Kunde kunde) throws Exception {
+	// Überprüfen, ob ein anderer Kunde mit derselben Kundennummer existiert und eine andere ID hat
+        Document existingKunde = collection.find(Filters.and(
+                Filters.eq("kundennummer", kunde.getKundennummer()),
+                Filters.ne("_id", kunde.getId())
+        )).first();
+        
+        if (existingKunde != null) {
+            throw new Exception("Kundennummer bereits vergeben.");
+        }
+	    
         Document doc = new Document("kundennummer", kunde.getKundennummer())
                 .append("haustypId", kunde.getHaustypId())
                 .append("vorname", kunde.getVorname())
