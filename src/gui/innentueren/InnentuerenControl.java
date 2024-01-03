@@ -2,6 +2,9 @@ package gui.innentueren;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
+
+import org.bson.types.ObjectId;
 
 import business.DatabaseConnector;
 import business.kunde.Kunde;
@@ -22,7 +25,7 @@ public class InnentuerenControl {
 	private Kunde kunde;
 	private List<Sonderwunsch> sonderwuensche;
 
-	public InnentuerenControl(KundeModel kundeModel) {
+	public InnentuerenControl(KundeModel kundeModel, Kunde kunde) {
 		DatabaseConnector connector = DatabaseConnector.getInstance();
     	this.sonderwunschModel = SonderwunschModel.getInstance(connector);
     	this.kundeSonderwunschModel = KundeSonderwunschModel.getInstance(connector);
@@ -30,6 +33,7 @@ public class InnentuerenControl {
 	   	stageInnentueren.initModality(Modality.APPLICATION_MODAL);
     	this.innentuerenView = new InnentuerenView(this, stageInnentueren);
     	this.kundeModel = kundeModel;
+    	this.kunde = this.kundeModel.getKundeByKundennummer(kunde.getKundennummer());
     	
     	
 	}
@@ -52,21 +56,51 @@ public class InnentuerenControl {
 
 	}
 
-	public void speichereSonderwuensche(int[] checked){
-		List<KundeSonderwunsch> kundesonderwünsche = this.kundeSonderwunschModel.getKundeSonderwuenscheByKategorie(this.kunde.getId(), "Innentüren");
-		if (InnentürenValidierung.validiereGlasKlar(checked[0])) {
+	public void speichereSonderwuensche(int[] anzahlarray){
+		List<KundeSonderwunsch> kundeSonderwuensche = this.kundeSonderwunschModel.getKundeSonderwuenscheByKategorie(this.kunde.getId(), "Innentüren");
+		List<Sonderwunsch> sonderwuensche = this.sonderwunschModel.getSonderwunschByKategorie("Innentüren");
+			
+		if (InnentürenValidierung.validiereGlasKlar(anzahlarray[0])) {
+			speichernOderAendern(anzahlarray[0], kundeSonderwuensche, sonderwuensche.get(0));
+		}
+		else {
+			innentuerenView.zeigeFehlermeldung("Fehler", "Die Anzahl der Glasausschnitte(Klar) ist falsch");
+		}
+		if (InnentürenValidierung.validiereGlasMilch(anzahlarray[1])) {
+			speichernOderAendern(anzahlarray[1], kundeSonderwuensche, sonderwuensche.get(1));
+		}
+		else {
+			innentuerenView.zeigeFehlermeldung("Fehler", "Die Anzahl der Glasausschnitte(Milchig) ist falsch");
+		}
+		if (InnentürenValidierung.validiereGarage(anzahlarray[2])) {
+			speichernOderAendern(anzahlarray[2], kundeSonderwuensche, sonderwuensche.get(2));
+		}
+		else {
+			innentuerenView.zeigeFehlermeldung("Garage", "Die Anzahl der Garagen ist falsch");
+		}
+	}
+	private void speichernOderAendern(int anzahl, List<KundeSonderwunsch> kundeSonderwuensche,
+			Sonderwunsch sonderwunsch) {
+		if (sonderwunschExistiert(kundeSonderwuensche, sonderwunsch.getId())) {
+			this.kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(this.kunde.getId(), sonderwunsch.getId(), anzahl);
 			
 		}
 		else {
-			innentuerenView.zeigeFehlermeldung("Fehler", "");
+			try {
+				this.kundeSonderwunschModel.addKundeSonderwunsch(this.kunde.getId(), sonderwunsch.getId() , anzahl);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
 		}
-		if (InnentürenValidierung.validiereGlasMilch(checked[1])) {
-			
+	}
+	
+	private boolean sonderwunschExistiert(List<KundeSonderwunsch> kundeSonderwuensche, ObjectId sonderwunschid) {
+		for (KundeSonderwunsch kundeSonderwunsch : kundeSonderwuensche) {
+			if (kundeSonderwunsch.getSonderwunschId().compareTo(sonderwunschid) == 0) {
+				return true;
+			}
 		}
-		if (InnentürenValidierung.validiereGarage(checked[2])) {
-			
-		}
-		kundesonderwünsche.forEach((ks) -> kundeSonderwunschModel.deleteKundeSonderwunsch(ks.getKundeId()));
+		return false;
 	}
 
 	public void speichereCsv() {

@@ -66,9 +66,9 @@ public class KundeControl {
     	this.fensterUndAussentuerenControl.oeffneGrundrissView();
     }
     
-    public void oeffneInnentuerenControl() {
+    public void oeffneInnentuerenControl(Kunde kunde) {
     	if (this.innentuerenControl == null){
-    		this.innentuerenControl = new InnentuerenControl(kundeModel);
+    		this.innentuerenControl = new InnentuerenControl(kundeModel, kunde);
       	}
     	this.innentuerenControl.oeffneInnentuerenView();
 		
