@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import business.DatabaseConnector;
@@ -17,6 +17,7 @@ public class SonderwunschKategorieModelTest {
 
     private DatabaseConnector dbConnector;
     private SonderwunschKategorieModel sonderwunschKategorieModel;
+    private ObjectId sonderwunschKategorieId;
 
     @Before
     public void setUp() {
@@ -24,60 +25,61 @@ public class SonderwunschKategorieModelTest {
         sonderwunschKategorieModel = SonderwunschKategorieModel.getInstance(dbConnector);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
+    	sonderwunschKategorieModel.deleteSonderwunschKategorie(sonderwunschKategorieId);
     }
 
     @Test
     public void testAddAndGetSonderwunschKategorie() {
-        String categoryName = "TestKategorie";
-        SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(categoryName);
+        String kategorieName = "TestKategorie";
+        SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(kategorieName);
 
-        ObjectId categoryId = sonderwunschKategorieModel.addSonderwunschKategorie(sonderwunschKategorie);
+        sonderwunschKategorieId = sonderwunschKategorieModel.addSonderwunschKategorie(sonderwunschKategorie);
 
-        assertNotNull(categoryId);
+        assertNotNull(sonderwunschKategorieId);
 
-        SonderwunschKategorie retrievedCategory = sonderwunschKategorieModel.getSonderwunschKategorieById(categoryId);
+        SonderwunschKategorie retrievedCategory = sonderwunschKategorieModel.getSonderwunschKategorieById(sonderwunschKategorieId);
         assertNotNull(retrievedCategory);
-        assertEquals(categoryName, retrievedCategory.getName());
+        assertEquals(kategorieName, retrievedCategory.getName());
     }
 
     @Test
     public void testUpdateAndDeleteSonderwunschKategorie() {
-        String oldCategoryName = "OldCategory";
-        SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(oldCategoryName);
+        String oldKategorieName = "OldKategorie";
+        SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(oldKategorieName);
 
-        ObjectId categoryId = sonderwunschKategorieModel.addSonderwunschKategorie(sonderwunschKategorie);
+        sonderwunschKategorieId = sonderwunschKategorieModel.addSonderwunschKategorie(sonderwunschKategorie);
 
-        assertNotNull(categoryId);
+        assertNotNull(sonderwunschKategorieId);
 
         // Update
-        String newCategoryName = "NewCategory";
-        sonderwunschKategorie.setName(newCategoryName);
-        assertTrue(sonderwunschKategorieModel.updateSonderwunschKategorie(categoryId, sonderwunschKategorie));
+        String newKategorieName = "NewKategorie";
+        sonderwunschKategorie.setName(newKategorieName);
+        assertTrue(sonderwunschKategorieModel.updateSonderwunschKategorie(sonderwunschKategorieId, sonderwunschKategorie));
 
         // Verify update
-        SonderwunschKategorie updatedCategory = sonderwunschKategorieModel.getSonderwunschKategorieById(categoryId);
+        SonderwunschKategorie updatedCategory = sonderwunschKategorieModel.getSonderwunschKategorieById(sonderwunschKategorieId);
         assertNotNull(updatedCategory);
-        assertEquals(newCategoryName, updatedCategory.getName());
+        assertEquals(newKategorieName, updatedCategory.getName());
 
         // Delete
-        assertTrue(sonderwunschKategorieModel.deleteSonderwunschKategorie(categoryId));
+        assertTrue(sonderwunschKategorieModel.deleteSonderwunschKategorie(sonderwunschKategorieId));
 
         // Verify deletion
-        assertNull(sonderwunschKategorieModel.getSonderwunschKategorieById(categoryId));
+        assertNull(sonderwunschKategorieModel.getSonderwunschKategorieById(sonderwunschKategorieId));
     }
 
     @Test
     public void testGetAllSonderwunschKategorie() {
-        String categoryName1 = "Category1";
-        String categoryName2 = "Category2";
+        String kategorieName1 = "Kategorie1";
+        String kategorieName2 = "Kategorie2";
 
-        SonderwunschKategorie category1 = new SonderwunschKategorie(categoryName1);
-        SonderwunschKategorie category2 = new SonderwunschKategorie(categoryName2);
+        SonderwunschKategorie kategorie1 = new SonderwunschKategorie(kategorieName1);
+        SonderwunschKategorie kategorie2 = new SonderwunschKategorie(kategorieName2);
 
-        sonderwunschKategorieModel.addSonderwunschKategorie(category1);
-        sonderwunschKategorieModel.addSonderwunschKategorie(category2);
+        sonderwunschKategorieId = sonderwunschKategorieModel.addSonderwunschKategorie(kategorie1);
+        ObjectId sonderwunschKategorieId2 = sonderwunschKategorieModel.addSonderwunschKategorie(kategorie2);
 
         // Get all categories
         List<SonderwunschKategorie> categories = sonderwunschKategorieModel.getAllSonderwunschKategorie();
@@ -86,23 +88,25 @@ public class SonderwunschKategorieModelTest {
 
         // Verify the retrieved categories
         SonderwunschKategorie retrievedCategory1 = categories.get(0);
-        assertEquals(categoryName1, retrievedCategory1.getName());
+        assertEquals(kategorieName1, retrievedCategory1.getName());
 
         SonderwunschKategorie retrievedCategory2 = categories.get(1);
-        assertEquals(categoryName2, retrievedCategory2.getName());
+        assertEquals(kategorieName2, retrievedCategory2.getName());
+        
+        sonderwunschKategorieModel.deleteSonderwunschKategorie(sonderwunschKategorieId2);
     }
 
     @Test
     public void testGetSonderwunschKategorieByName() {
-        String categoryName = "TestCategory";
-        SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(categoryName);
+        String kategorieName = "Testkategorie";
+        SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(kategorieName);
 
-        sonderwunschKategorieModel.addSonderwunschKategorie(sonderwunschKategorie);
+        sonderwunschKategorieId = sonderwunschKategorieModel.addSonderwunschKategorie(sonderwunschKategorie);
 
         // Get category by name
-        SonderwunschKategorie retrievedCategory = sonderwunschKategorieModel.getSonderwunschKategorieByName(categoryName);
+        SonderwunschKategorie retrievedCategory = sonderwunschKategorieModel.getSonderwunschKategorieByName(kategorieName);
         assertNotNull(retrievedCategory);
-        assertEquals(categoryName, retrievedCategory.getName());
+        assertEquals(kategorieName, retrievedCategory.getName());
     }
 
 }

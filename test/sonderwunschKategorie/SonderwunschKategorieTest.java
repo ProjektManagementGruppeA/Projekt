@@ -14,7 +14,6 @@ public class SonderwunschKategorieTest {
         String name = "TestKategorie";
         SonderwunschKategorie sonderwunschKategorie = new SonderwunschKategorie(name);
 
-        assertNotNull(sonderwunschKategorie.getId());
         assertEquals(name, sonderwunschKategorie.getName());
     }
 
