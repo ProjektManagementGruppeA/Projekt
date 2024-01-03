@@ -3,6 +3,7 @@ package business.kunde;
 import business.DatabaseConnector;
 import business.haustyp.Haustyp;
 import business.haustyp.HaustypModel;
+import business.kundeSonderwunsch.KundeSonderwunschModel;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -20,12 +21,14 @@ public class KundeModel {
     private static KundeModel instance; // Die Singleton-Instanz
     private MongoCollection<Document> collection;
     private HaustypModel haustypModel;
+    private KundeSonderwunschModel kundeSonderwunschModel;
 
     // Privater Konstruktor verhindert Instanziierung von außen
     private KundeModel(DatabaseConnector connector) {
         MongoDatabase database = connector.getDatabase();
         collection = database.getCollection("kunden");
         this.haustypModel = HaustypModel.getInstance(connector);
+        this.kundeSonderwunschModel = KundeSonderwunschModel.getInstance(connector);
     }
 
     /**
@@ -176,18 +179,44 @@ public class KundeModel {
      * @return boolean Wahr, wenn der Kunde gelöscht wurde, falsch andernfalls.
      */
     public boolean deleteKunde(ObjectId id) {
-        DeleteResult result = collection.deleteOne(Filters.eq("_id", id));
-        return result.getDeletedCount() > 0;
+    	boolean deleted = true;
+        try {
+            deleted &= kundeSonderwunschModel.deleteKundeSonderwunschByKundeId(id);
+
+            DeleteResult result = collection.deleteOne(Filters.eq("_id", id));
+            deleted &= result.getDeletedCount() > 0;
+        } catch (Exception e) {
+
+            deleted = false;
+        }
+        return deleted;
     }
     
     public boolean deleteKundeByHausnummer(int hausnummer) {
-        Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
-        if (haustyp == null) {
-            return false;
+    	boolean deleted = true;
+
+        try {
+            Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+            if (haustyp == null) {
+                return false;
+            }
+
+            Kunde kunde = getKundeByHausnummer(hausnummer);
+            if (kunde == null) {
+                return false;
+            }
+
+            ObjectId kundeId = kunde.getId();
+            deleted &= kundeSonderwunschModel.deleteKundeSonderwunschByKundeId(kundeId);
+
+            DeleteResult result = collection.deleteOne(Filters.eq("_id", kundeId));
+            deleted &= result.getDeletedCount() > 0;
+            
+        } catch (Exception e) {
+            deleted = false;
         }
 
-        DeleteResult result = collection.deleteOne(Filters.eq("haustypId", haustyp.getId()));
-        return result.getDeletedCount() > 0;
+        return deleted;
         
     }
 
