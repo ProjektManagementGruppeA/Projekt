@@ -1,5 +1,6 @@
 package gui.grundriss;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +9,8 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import business.DatabaseConnector;
+
+import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
@@ -24,6 +27,7 @@ public final class GrundrissControl {
 	
 	// das View-Objekt des Grundriss-Fensters
 	private GrundrissView grundrissView;
+	private Kunde kunde;
 
 	
 
@@ -32,10 +36,11 @@ public final class GrundrissControl {
 	 * Fenster fuer die Sonderwuensche zum Grundriss.
 	 * @param grundrissStage, Stage fuer das View-Objekt zu den Sonderwuenschen zum Grundriss
 	 */
-	public GrundrissControl(KundeModel kundeModel){  
+	public GrundrissControl(KundeModel kundeModel, Kunde kunde){  
 	   	Stage stageGrundriss = new Stage();
     	stageGrundriss.initModality(Modality.APPLICATION_MODAL);
-    	this.grundrissView = new GrundrissView(this, stageGrundriss); // ObjectId kunde
+    	this.grundrissView = new GrundrissView(this, stageGrundriss);
+    	this.kunde = kunde;
 	}
 	    
 	/**

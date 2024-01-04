@@ -48,6 +48,12 @@ public class KundeModel {
      * @throws IllegalArgumentException, wenn das Kunde-Objekt null ist.
      */
     public ObjectId addKunde(Kunde kunde) throws Exception{
+	// Überprüfen, ob die Kundennummer bereits existiert
+        Document existingKunde = collection.find(Filters.eq("kundennummer", kunde.getKundennummer())).first();
+        if (existingKunde != null) {
+            throw new IllegalArgumentException("Kundennummer existiert bereits.");
+        }
+	    
         Document doc = new Document("kundennummer", kunde.getKundennummer())
                 .append("haustypId", kunde.getHaustypId())
                 .append("vorname", kunde.getVorname())
@@ -157,7 +163,17 @@ public class KundeModel {
      * @param kunde Die neuen Informationen des Kunden.
      * @return boolean Wahr, wenn das Update erfolgreich war, falsch andernfalls.
      */
-    public boolean updateKunde(Kunde kunde) {
+    public boolean updateKunde(Kunde kunde) throws Exception {
+	// Überprüfen, ob ein anderer Kunde mit derselben Kundennummer existiert und eine andere ID hat
+        Document existingKunde = collection.find(Filters.and(
+                Filters.eq("kundennummer", kunde.getKundennummer()),
+                Filters.ne("_id", kunde.getId())
+        )).first();
+        
+        if (existingKunde != null) {
+            throw new Exception("Kundennummer bereits vergeben.");
+        }
+	    
         Document doc = new Document("kundennummer", kunde.getKundennummer())
                 .append("haustypId", kunde.getHaustypId())
                 .append("vorname", kunde.getVorname())

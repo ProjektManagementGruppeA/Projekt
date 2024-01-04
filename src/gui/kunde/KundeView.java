@@ -139,7 +139,7 @@ public class KundeView{
            	loescheKunden();
 	    });
       	mnItmGrundriss.setOnAction(aEvent-> {
- 	        kundeControl.oeffneGrundrissControl(); //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
+ 	        kundeControl.oeffneGrundrissControl(createKunde()); 
 	    });
     	mnItmFensterUndAussentueren.setOnAction(aEvent-> { //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
  	        kundeControl.oeffneFensterUndAussentuerenControl(); 
@@ -180,15 +180,20 @@ public class KundeView{
     }
     
     private void legeKundenAn(){
-    	ObjectId hausNummer = haustypModel.getHaustypByHausnummer(cmbBxNummerHaus.getValue()).getId();
+    	Kunde kunde = createKunde();
+        kundeControl.speichereKunden(kunde);
+	}
+
+
+	private Kunde createKunde() {
+		ObjectId hausNummer = haustypModel.getHaustypByHausnummer(cmbBxNummerHaus.getValue()).getId();
     	String kundenNummer = txtKundennummer.getText();
     	String vorname = txtVorname.getText();
     	String nachname = txtNachname.getText();
     	String telefonnummer = txtTelefonnummer.getText();
     	String email = txtEmail.getText();
         Kunde kunde = new Kunde(kundenNummer, hausNummer, vorname, nachname, telefonnummer, email);
-        
-        kundeControl.speichereKunden(kunde);
+		return kunde;
 	}
     
     private void aendereKunden(){
