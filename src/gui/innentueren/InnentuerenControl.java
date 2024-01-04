@@ -24,6 +24,7 @@ public class InnentuerenControl {
 	private KundeSonderwunschModel kundeSonderwunschModel;
 	private Kunde kunde;
 	private List<Sonderwunsch> sonderwuensche;
+	
 
 	public InnentuerenControl(KundeModel kundeModel, Kunde kunde) {
 		DatabaseConnector connector = DatabaseConnector.getInstance();
@@ -53,27 +54,43 @@ public class InnentuerenControl {
 	}
 	private void leseInnentuerenSonderwuensche() {
 		this.sonderwuensche = sonderwunschModel.getSonderwunschByKategorie("Innentüren");
-
+	}
+	
+	private List<KundeSonderwunsch> leseInnentuerenKundenSonderwuensche() {
+		return kundeSonderwunschModel.getKundeSonderwuenscheByKategorie(this.kunde.getId(), "Innentüren");
+	}
+	
+	public int[] extractAnzahl() {
+		List<KundeSonderwunsch> kundeSonderwuensche = this.leseInnentuerenKundenSonderwuensche();
+		int[] anzahl = new int[3];
+		KundeSonderwunsch kundeSonderwunsch;
+		for (int i = 0; i < 3; i++) {
+			if ((kundeSonderwunsch = sonderwunschExistiert(kundeSonderwuensche, this.sonderwuensche.get(i).getId())) != null) {
+				anzahl[i] = kundeSonderwunsch.getAnzahl();
+			}
+		}
+		return anzahl;
+		
 	}
 
 	public void speichereSonderwuensche(int[] anzahlarray){
-		List<KundeSonderwunsch> kundeSonderwuensche = this.kundeSonderwunschModel.getKundeSonderwuenscheByKategorie(this.kunde.getId(), "Innentüren");
-		List<Sonderwunsch> sonderwuensche = this.sonderwunschModel.getSonderwunschByKategorie("Innentüren");
+		List<KundeSonderwunsch> kundeSonderwuensche = this.leseInnentuerenKundenSonderwuensche();
+		leseInnentuerenSonderwuensche();
 			
 		if (InnentürenValidierung.validiereGlasKlar(anzahlarray[0])) {
-			speichernOderAendern(anzahlarray[0], kundeSonderwuensche, sonderwuensche.get(0));
+			speichernOderAendern(anzahlarray[0], kundeSonderwuensche, this.sonderwuensche.get(0));
 		}
 		else {
 			innentuerenView.zeigeFehlermeldung("Fehler", "Die Anzahl der Glasausschnitte(Klar) ist falsch");
 		}
 		if (InnentürenValidierung.validiereGlasMilch(anzahlarray[1])) {
-			speichernOderAendern(anzahlarray[1], kundeSonderwuensche, sonderwuensche.get(1));
+			speichernOderAendern(anzahlarray[1], kundeSonderwuensche, this.sonderwuensche.get(1));
 		}
 		else {
 			innentuerenView.zeigeFehlermeldung("Fehler", "Die Anzahl der Glasausschnitte(Milchig) ist falsch");
 		}
 		if (InnentürenValidierung.validiereGarage(anzahlarray[2])) {
-			speichernOderAendern(anzahlarray[2], kundeSonderwuensche, sonderwuensche.get(2));
+			speichernOderAendern(anzahlarray[2], kundeSonderwuensche, this.sonderwuensche.get(2));
 		}
 		else {
 			innentuerenView.zeigeFehlermeldung("Garage", "Die Anzahl der Garagen ist falsch");
@@ -81,7 +98,7 @@ public class InnentuerenControl {
 	}
 	private void speichernOderAendern(int anzahl, List<KundeSonderwunsch> kundeSonderwuensche,
 			Sonderwunsch sonderwunsch) {
-		if (sonderwunschExistiert(kundeSonderwuensche, sonderwunsch.getId())) {
+		if (sonderwunschExistiert(kundeSonderwuensche, sonderwunsch.getId())!= null) {
 			this.kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(this.kunde.getId(), sonderwunsch.getId(), anzahl);
 			
 		}
@@ -94,13 +111,13 @@ public class InnentuerenControl {
 		}
 	}
 	
-	private boolean sonderwunschExistiert(List<KundeSonderwunsch> kundeSonderwuensche, ObjectId sonderwunschid) {
+	private KundeSonderwunsch sonderwunschExistiert(List<KundeSonderwunsch> kundeSonderwuensche, ObjectId sonderwunschid) {
 		for (KundeSonderwunsch kundeSonderwunsch : kundeSonderwuensche) {
 			if (kundeSonderwunsch.getSonderwunschId().compareTo(sonderwunschid) == 0) {
-				return true;
+				return kundeSonderwunsch;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	public void speichereCsv() {

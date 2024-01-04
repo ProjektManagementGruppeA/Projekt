@@ -1,5 +1,8 @@
 package gui.innentueren;
 
+import java.util.List;
+
+import business.kundeSonderwunsch.KundeSonderwunsch;
 import gui.basis.BasisView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -67,7 +70,24 @@ public class InnentuerenView extends BasisView{
 	}
 	
 	public void oeffneInnentuerenView(){ 
+		this.leseKundenSonderwuensche();
 		super.oeffneBasisView();
+		
+	}
+	
+	public void leseKundenSonderwuensche() {
+		int[] anzahl = innentuerenControl.extractAnzahl();
+		if (anzahl[0] > 0) {
+			spinGlasausschnittKlarAnzahl.getValueFactory().setValue(anzahl[0]);
+			chckBxGlasausschnittKlar.setSelected(true);
+		}
+		if (anzahl[1] > 0) {
+			spinGlasausschnittMilchAnzahl.getValueFactory().setValue(anzahl[1]);
+			chckBxGlasausschnittMilch.setSelected(true);
+		}
+		if (anzahl[2] > 0) {
+			chckBxInnentuerGarage.setSelected(true);
+		}
 	}
 
 	@Override
