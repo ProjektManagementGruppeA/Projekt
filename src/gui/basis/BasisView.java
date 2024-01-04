@@ -7,6 +7,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -69,7 +70,12 @@ public abstract class BasisView {
     		speichereSonderwuensche();
     	});
         btnExport.setOnAction(aEvent -> {
-    		speichereCsv();
+    		try {
+				speichereCsv();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	});
     }
     

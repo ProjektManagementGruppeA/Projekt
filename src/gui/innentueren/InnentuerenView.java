@@ -4,8 +4,11 @@ import gui.basis.BasisView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
+import java.io.File;
 import java.io.IOException;
 
 public class InnentuerenView extends BasisView{
@@ -91,13 +94,24 @@ public class InnentuerenView extends BasisView{
 		                     chckBxGlasausschnittMilch.isSelected(),
 		                     chckBxInnentuerGarage.isSelected()
 		};
-		this.innentuerenControl.speichereSonderwuensche(checked);
+		try {
+			this.innentuerenControl.speichereSonderwuensche(checked);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	protected void speichereCsv() throws IOException {
-		this.innentuerenControl.speichereCsv();
+		 FileChooser fileChooser = new FileChooser();
+	        fileChooser.setTitle("Speichere CSV Datei");
+	        fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV Dateien", "*.csv"));
+	        File source = fileChooser.showSaveDialog(sonderwunschStage);
+	       // System.out.print(file);
+	        this.innentuerenControl.speichereCsv();
+	        
 		
 	}
 	

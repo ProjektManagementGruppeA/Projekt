@@ -8,9 +8,12 @@ import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
 import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -73,17 +76,27 @@ public class InnentuerenControl {
 		
 	}
 
+	
 	public void speichereCsv() throws IOException {
-		// TODO Auto-generated method stub
-		String[][] input = new String[2][];
-		input[0] =  Arrays.toString(leseInnentuerenSonderwuenschePreise()).split("[\\[\\]]")[1].split(", ");
-		CsvFile idFile = new CsvFile("Kundennummer_NachnameDesKunden_Innentueren",input);
-		idFile.export();
+		
+		int input[] = leseInnentuerenSonderwuenschePreise();
+		String inputString[] = null;
+		
+		 for (int i = 0; i < input.length; i++) {
+	            inputString[i] = String.valueOf(input[i]);
+	        }
+		 
+		 System.out.println(inputString);
+			// CsvFile idFile = new CsvFile(file,inputString);
+		 
+
+		//idFile.export();
 	}
 
 	public int[] lesePreise() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

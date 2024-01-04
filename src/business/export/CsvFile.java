@@ -6,14 +6,14 @@ import java.io.IOException;
 
 public class CsvFile implements ExternalFile {
 
-    protected String fileName;
-    protected String[][] input;
-    public CsvFile(String fileName, String[][]input) {
+    protected File fileName;
+    protected String[] input;
+    public CsvFile(File fileName, String[]input) {
         this.fileName = fileName;
         this.input = input;
     }
-    @Override
-    public void export() throws IOException {
+   
+   /* public void export() throws IOException {
         File csvOutputFile = new File(fileName);
         FileWriter fileWriter = new FileWriter(csvOutputFile);
 
@@ -31,6 +31,28 @@ public class CsvFile implements ExternalFile {
             fileWriter.write(line.toString());
         }
         fileWriter.close();
+    }
+    */
+    
+    @Override
+    public void export() {
+    	
+        try {
+            FileWriter writer = new FileWriter(fileName);
+
+            for (int i = 0; i < input.length; i++) {
+                writer.append(input[i]);
+                if (i != input.length - 1) {
+                    writer.append(",");
+                }
+            }
+            writer.flush();
+            writer.close();
+            System.out.println("Array successfully written to CSV file.");
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
