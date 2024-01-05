@@ -79,11 +79,17 @@ public class InnentuerenControl {
 	public void speichereToCsv(File file,int[]input) throws IOException {
 		
 		//int input[] = leseInnentuerenSonderwuenschePreise();
-		 String[] inputString = new String[input.length];
+		 String[][] inputString = new String[2][input.length];
 		
 		 for (int i = 0; i < input.length; i++) {
-	            inputString[i] = String.valueOf(input[i]);
+	            inputString[1][i] = String.valueOf(input[i]);
+	            System.out.print(i);
 	        }
+		 	inputString[0][0] = "Glasauschnitt (Klarglas)";
+		 	inputString[0][1] = "Glasauschnitt (Milchglas)";
+		 	inputString[0][2] = "Innentuer zur Garage als Holztür";
+		 	inputString[0][3] = "Gesamtpreis";
+		 	
 			 CsvFile idFile = new CsvFile(file,inputString);
 			 idFile.export();
 	}
