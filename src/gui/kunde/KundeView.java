@@ -142,10 +142,10 @@ public class KundeView{
  	        kundeControl.oeffneGrundrissControl(createKunde()); 
 	    });
     	mnItmFensterUndAussentueren.setOnAction(aEvent-> { //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
- 	        kundeControl.oeffneFensterUndAussentuerenControl(); 
+ 	        kundeControl.oeffneFensterUndAussentuerenControl(createKunde()); 
 	    });
     	mnItmInnentueren.setOnAction(aEvent -> {
-    		kundeControl.oeffneInnentuerenControl();
+    		kundeControl.oeffneInnentuerenControl(createKunde());
     	});
       	mnItmCsvExport.setOnAction(aEvent-> {
        		exportAsCsv();
@@ -181,6 +181,7 @@ public class KundeView{
     
     private void legeKundenAn(){
     	Kunde kunde = createKunde();
+        
         kundeControl.speichereKunden(kunde);
 	}
 

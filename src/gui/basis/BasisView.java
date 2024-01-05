@@ -32,7 +32,7 @@ public abstract class BasisView {
     */
     public BasisView(Stage sonderwunschStage){
     	this.sonderwunschStage = sonderwunschStage;
-	    Scene scene = new Scene(borderPane, 560, 450);
+	    Scene scene = new Scene(borderPane, 600, 500);
 	    sonderwunschStage.setScene(scene);
 	
 	    this.initListener();
@@ -91,7 +91,7 @@ public abstract class BasisView {
   	 * macht das BasisView-Objekt sichtbar.
   	 */
   	protected void oeffneBasisView(){ 
-	    sonderwunschStage.showAndWait();
+	    sonderwunschStage.show();
   	}
   	     	
   	/* berechnet den Preis der ausgesuchten Sonderwuensche und zeigt diesen an */
@@ -101,6 +101,14 @@ public abstract class BasisView {
   	protected abstract void speichereSonderwuensche();
   	
   	protected abstract void speichereCsv() throws IOException;
+  	
+  	protected void messageboxSpeichernErfolgreich(String sonderwunsch) {
+  	  Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle(sonderwunsch);
+	    alert.setHeaderText(null);
+	    alert.setContentText("speichern erfolgreich");
+	    alert.show();
+  	};
   	
  	
 }
