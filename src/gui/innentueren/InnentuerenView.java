@@ -7,12 +7,15 @@ import gui.basis.BasisView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
+import java.io.File;
 import java.io.IOException;
 
 public class InnentuerenView extends BasisView{
@@ -132,7 +135,27 @@ public class InnentuerenView extends BasisView{
 
 	@Override
 	protected void speichereCsv() throws IOException {
-		this.innentuerenControl.speichereCsv();
+		int finalPrice = 0;
+		int[] csvPreis = {0,0,0,0};
+		if (chckBxGlasausschnittKlar.isSelected()) {
+			finalPrice += preise[0];
+	        csvPreis[0]= preise[0];
+	    }
+	    if (chckBxGlasausschnittMilch.isSelected()) {
+	    	csvPreis[1]= preise[1];
+	    	finalPrice += preise[1];
+	    }
+	    if (chckBxInnentuerGarage.isSelected()) {
+	    	csvPreis[2]= preise[2];
+	    	finalPrice += preise[2];
+	    }
+	    csvPreis[3]= finalPrice;
+		 FileChooser fileChooser = new FileChooser();
+	        fileChooser.setTitle("Speichere CSV Datei");
+	        fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV Dateien", "*.csv"));
+	        File source = fileChooser.showSaveDialog(sonderwunschStage);
+	        this.innentuerenControl.speichereToCsv(source, csvPreis);
+	        
 		
 	}
 	
