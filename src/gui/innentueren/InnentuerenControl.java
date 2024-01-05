@@ -76,21 +76,16 @@ public class InnentuerenControl {
 		
 	}
 
-	
-	public void speichereCsv() throws IOException {
+	public void speichereToCsv(File file) throws IOException {
 		
 		int input[] = leseInnentuerenSonderwuenschePreise();
-		String inputString[] = null;
+		 String[] inputString = new String[input.length];
 		
 		 for (int i = 0; i < input.length; i++) {
 	            inputString[i] = String.valueOf(input[i]);
 	        }
-		 
-		 System.out.println(inputString);
-			// CsvFile idFile = new CsvFile(file,inputString);
-		 
-
-		//idFile.export();
+			 CsvFile idFile = new CsvFile(file,inputString);
+			 idFile.export();
 	}
 
 	public int[] lesePreise() {

@@ -109,8 +109,7 @@ public class InnentuerenView extends BasisView{
 	        fileChooser.setTitle("Speichere CSV Datei");
 	        fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV Dateien", "*.csv"));
 	        File source = fileChooser.showSaveDialog(sonderwunschStage);
-	       // System.out.print(file);
-	        this.innentuerenControl.speichereCsv();
+	        this.innentuerenControl.speichereToCsv(source);
 	        
 		
 	}

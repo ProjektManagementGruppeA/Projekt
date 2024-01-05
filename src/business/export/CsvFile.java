@@ -48,7 +48,7 @@ public class CsvFile implements ExternalFile {
             }
             writer.flush();
             writer.close();
-            System.out.println("Array successfully written to CSV file.");
+            System.out.println("Data successfully written to CSV file.");
         } catch (IOException e) {
             System.out.println("Error writing to CSV file: " + e.getMessage());
             e.printStackTrace();
