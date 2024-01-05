@@ -25,7 +25,7 @@ public class CsvFile implements ExternalFile {
                          writer.append(",");
                      }
                  }
-                 writer.append("\n"); // Move to the next line for the next row
+                 writer.append("\n"); 
              }
 
              writer.flush();
