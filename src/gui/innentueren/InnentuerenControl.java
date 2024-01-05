@@ -87,7 +87,7 @@ public class InnentuerenControl {
 	        }
 		 	inputString[0][0] = "Glasauschnitt (Klarglas)";
 		 	inputString[0][1] = "Glasauschnitt (Milchglas)";
-		 	inputString[0][2] = "Innentuer zur Garage als Holztür";
+		 	inputString[0][2] = "Innentuer zur Garage als Holztuer";
 		 	inputString[0][3] = "Gesamtpreis";
 		 	
 			 CsvFile idFile = new CsvFile(file,inputString);
