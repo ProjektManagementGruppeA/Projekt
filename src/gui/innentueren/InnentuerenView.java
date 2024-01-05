@@ -105,11 +105,26 @@ public class InnentuerenView extends BasisView{
 
 	@Override
 	protected void speichereCsv() throws IOException {
+		int finalPrice = 0;
+		int[] csvPreis = {0,0,0,0};
+		if (chckBxGlasausschnittKlar.isSelected()) {
+			finalPrice += preise[0];
+	        csvPreis[0]= preise[0];
+	    }
+	    if (chckBxGlasausschnittMilch.isSelected()) {
+	    	csvPreis[1]= preise[1];
+	    	finalPrice += preise[1];
+	    }
+	    if (chckBxInnentuerGarage.isSelected()) {
+	    	csvPreis[2]= preise[2];
+	    	finalPrice += preise[2];
+	    }
+	    csvPreis[3]= finalPrice;
 		 FileChooser fileChooser = new FileChooser();
 	        fileChooser.setTitle("Speichere CSV Datei");
 	        fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV Dateien", "*.csv"));
 	        File source = fileChooser.showSaveDialog(sonderwunschStage);
-	        this.innentuerenControl.speichereToCsv(source);
+	        this.innentuerenControl.speichereToCsv(source, csvPreis);
 	        
 		
 	}

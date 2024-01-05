@@ -76,9 +76,9 @@ public class InnentuerenControl {
 		
 	}
 
-	public void speichereToCsv(File file) throws IOException {
+	public void speichereToCsv(File file,int[]input) throws IOException {
 		
-		int input[] = leseInnentuerenSonderwuenschePreise();
+		//int input[] = leseInnentuerenSonderwuenschePreise();
 		 String[] inputString = new String[input.length];
 		
 		 for (int i = 0; i < input.length; i++) {
