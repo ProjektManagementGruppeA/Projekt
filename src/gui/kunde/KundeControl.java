@@ -52,17 +52,21 @@ public class KundeControl {
      * Das GrundrissView wird sichtbar gemacht.
      */
     public void oeffneGrundrissControl(Kunde kunde){
-    	if (this.grundrissControl == null){
+    	/*if (this.grundrissControl == null){
     		this.grundrissControl = new GrundrissControl(kundeModel, kunde);
       	}
+    	*/
+    	this.grundrissControl = new GrundrissControl(kundeModel, kunde);
     	this.grundrissControl.oeffneGrundrissView();
     }
     
     
-    public void oeffneFensterUndAussentuerenControl(){
-    	if (this.fensterUndAussentuerenControl == null){
+    public void oeffneFensterUndAussentuerenControl(Kunde kunde){
+    	/*if (this.fensterUndAussentuerenControl == null){
     		this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel);
       	}
+      	*/
+    	this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel, kunde);
     	this.fensterUndAussentuerenControl.oeffneGrundrissView();
     }
     

@@ -142,7 +142,7 @@ public class KundeView{
  	        kundeControl.oeffneGrundrissControl(createKunde()); 
 	    });
     	mnItmFensterUndAussentueren.setOnAction(aEvent-> { //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
- 	        kundeControl.oeffneFensterUndAussentuerenControl(); 
+ 	        kundeControl.oeffneFensterUndAussentuerenControl(createKunde()); 
 	    });
     	mnItmInnentueren.setOnAction(aEvent -> {
     		kundeControl.oeffneInnentuerenControl();

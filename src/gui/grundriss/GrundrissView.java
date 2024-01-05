@@ -1,4 +1,4 @@
-package gui.grundriss;
+ package gui.grundriss;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -81,25 +81,34 @@ public class GrundrissView extends BasisView{
 	
 	public Button button = new Button("Sonderwunsch speichern");
 	
+	String kundennummer; 
+	
     /**
      * erzeugt ein GrundrissView-Objekt, belegt das zugehoerige Control
      * mit dem vorgegebenen Objekt und initialisiert die Steuerelemente der Maske
      * @param grundrissControl GrundrissControl, enthaelt das zugehoerige Control
      * @param grundrissStage Stage, enthaelt das Stage-Objekt fuer diese View
      */
-    public GrundrissView (GrundrissControl grundrissControl, Stage grundrissStage){ // ObjectId kunde von MainView aus übergeben
+    public GrundrissView (GrundrissControl grundrissControl, Stage grundrissStage, Kunde kunde){ // ObjectId kunde von MainView aus übergeben
     	super(grundrissStage);
         this.grundrissControl = grundrissControl;
         grundrissStage.setTitle("Sonderwünsche zu Grundriss-Varianten");
         this.preise = this.grundrissControl.leseGrundrissSonderwuenschePreise();
-        
+        this.kundennummer = kunde.getKundennummer();
 	    this.initKomponenten();
-	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId(); // replace with constructor parameter
+	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId(); // replace with constructor parameter
 	  
 	    
 	    this.loadSonderwuensche(this.kunde);
 	    
-	    
+	    grundrissStage.setOnCloseRequest(event -> {
+	        try {
+	            this.grundrissControl = null;
+	            //System.out.println("Controller entfernt");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 	 
     }
     
@@ -116,8 +125,8 @@ public class GrundrissView extends BasisView{
 		   for(int i = 0; i < list.size(); i++) {
 			   ObjectId sonderwunschid = list.get(i).getSonderwunschId();
 			   String beschreibung = SonderwunschModel.getInstance(connector).getSonderwunschById(sonderwunschid).getBeschreibung();
-			   System.out.println(beschreibung);
-			   System.out.println(list.get(i).getAnzahl());
+			   //System.out.println(beschreibung);
+			   //System.out.println(list.get(i).getAnzahl());
 			   
 			   
 			   if (list.get(i).getAnzahl() >= 1 && "Wand zur Abtrennung der Küche von dem Essbereich".equals(beschreibung)) {
@@ -289,7 +298,8 @@ public class GrundrissView extends BasisView{
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected void speichereSonderwuensche(){
   		try {
-			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId());
+			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId());
+			messageboxSpeichernErfolgreich("Grundriss");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -336,5 +346,4 @@ public class GrundrissView extends BasisView{
   	
  	
  }
-
 
