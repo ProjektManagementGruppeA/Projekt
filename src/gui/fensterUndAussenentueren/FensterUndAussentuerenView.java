@@ -18,6 +18,7 @@ import business.kundeSonderwunsch.KundeSonderwunschModel;
 import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
 import gui.basis.BasisView;
+import validierung.fensterUndAussentueren.FensterUndAussentuerenValidierung;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -34,8 +35,6 @@ public class FensterUndAussentuerenView extends BasisView{
 	private int[] preise;
 	
 	
-   
-    //---Anfang Attribute der grafischen Oberflaeche---
 	//---Anfang Attribute der grafischen Oberflaeche---
 	private Label lblSchiebetuerenEGTerrasse = new Label("Schiebetüren im EG zur Terrasse");
 	private TextField txtPreisSchiebetuerenEGTerrasse = new TextField();
@@ -89,30 +88,37 @@ public class FensterUndAussentuerenView extends BasisView{
 	
 	public Button button = new Button("Sonderwunsch speichern");
 	
+	String kundennummer;
+	
     /**
      * erzeugt ein GrundrissView-Objekt, belegt das zugehoerige Control
      * mit dem vorgegebenen Objekt und initialisiert die Steuerelemente der Maske
      * @param grundrissControl GrundrissControl, enthaelt das zugehoerige Control
      * @param grundrissStage Stage, enthaelt das Stage-Objekt fuer diese View
      */
-    public FensterUndAussentuerenView (FensterUndAussentuerenControl fensterUndAussentuerenControl, Stage grundrissStage){ // ObjectId kunde von MainView aus übergeben
+    public FensterUndAussentuerenView (FensterUndAussentuerenControl fensterUndAussentuerenControl, Stage grundrissStage, Kunde kunde){ // ObjectId kunde von MainView aus übergeben
     	super(grundrissStage);
         this.fensterUndAussentuerenControl = fensterUndAussentuerenControl;
         grundrissStage.setTitle("Sonderwünsche zu Fenster und Außentüren");
         this.preise = this.fensterUndAussentuerenControl.leseFensterUndAussentuerenSonderwuenschePreise();
-        
+        this.kundennummer = kunde.getKundennummer();
 	    this.initKomponenten();
-	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId(); // replace with constructor parameter
+	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId(); 
 	  
 	    
 	    this.loadSonderwuensche(this.kunde);
 	    
-	    
+	    grundrissStage.setOnCloseRequest(event -> {
+	        try {
+	            this.fensterUndAussentuerenControl = null;
+	            //System.out.println("Controller entfernt");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 	 
     }
     
-    
-
     
     public void loadSonderwuensche(ObjectId kunde) {
         List<KundeSonderwunsch> list = this.fensterUndAussentuerenControl.loadKundenSonderwunsch(kunde, "Fenster und Außentüren");
@@ -121,8 +127,8 @@ public class FensterUndAussentuerenView extends BasisView{
             for (int i = 0; i < list.size(); i++) {
                 ObjectId sonderwunschid = list.get(i).getSonderwunschId();
                 String beschreibung = SonderwunschModel.getInstance(connector).getSonderwunschById(sonderwunschid).getBeschreibung();
-                System.out.println(beschreibung);
-                System.out.println(list.get(i).getAnzahl());
+                //System.out.println(beschreibung);
+                //System.out.println(list.get(i).getAnzahl());
 
                 if (list.get(i).getAnzahl() >= 1 && "Schiebetüren im EG zur Terrasse".equals(beschreibung)) {
                     chckBxSchiebetuerenEGTerrasse.setSelected(true);
@@ -168,18 +174,36 @@ public class FensterUndAussentuerenView extends BasisView{
 
 	        boolean isSelected = correspondingCheckBox.isSelected();
 	        KundeSonderwunsch existingKundeSonderwunsch = kundeSonderwunschModel.getKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId());
-
-	        if (isSelected && existingKundeSonderwunsch == null) {
-	            // Sonderwunsch is selected and not yet in the database for this customer
-	        	System.out.println("Sonderwunsch is selected and not yet in the database for this customer");
-	            kundeSonderwunschModel.addKundeSonderwunsch(kunde, sw.getId(), 1);
-	        } else if (!isSelected && existingKundeSonderwunsch != null) {
-	            // Sonderwunsch is not selected but exists in the database for this customer
-	        	System.out.println("Sonderwunsch is not selected but exists in the database for this customer");
-	            kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId(), 0);
-	        } // If Sonderwunsch is selected and already exists, no action needed
+	        
+	        //System.out.println(sw.getBeschreibung().contains("Elektrische Rolläden"));
+	        
+	        if(sw.getBeschreibung().equals("Elektrische Rolläden EG") && !FensterUndAussentuerenValidierung.validElektrischeRolladenEG(findCheckBoxForSonderwunsch("Vorbereitung für elektrische Antriebe Rolläden EG").isSelected(), isSelected)){
+	        	isSelected = false;
+	        	chckBxElektrischeRollaedenEG.setSelected(false);
+	        }
+	        else if(sw.getBeschreibung().equals("Elektrische Rolläden OG") && !FensterUndAussentuerenValidierung.validElektrischeRolladenEG(findCheckBoxForSonderwunsch("Vorbereitung für elektrische Antriebe Rolläden OG").isSelected(), isSelected)){
+	        	isSelected = false;
+	        	chckBxElektrischeRollaedenOG.setSelected(false);
+	        }
+	        else if(sw.getBeschreibung().equals("Elektrische Rolläden DG") && !FensterUndAussentuerenValidierung.validElektrischeRolladenEG(findCheckBoxForSonderwunsch("Vorbereitung für elektrische Antriebe Rolläden DG").isSelected(), isSelected)){
+	        	isSelected = false;
+	        	chckBxElektrischeRollaedenDG.setSelected(false);
+	        }else {
+	        
+		        if (isSelected && existingKundeSonderwunsch == null) {
+		            // Sonderwunsch is selected and not yet in the database for this customer
+		        	//System.out.println("Sonderwunsch is selected and not yet in the database for this customer");
+		            kundeSonderwunschModel.addKundeSonderwunsch(kunde, sw.getId(), 1);
+		        } else if (!isSelected && existingKundeSonderwunsch != null) {
+		            // Sonderwunsch is not selected but exists in the database for this customer
+		        	//System.out.println("Sonderwunsch is not selected but exists in the database for this customer");
+		            kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId(), 0);
+		        } // If Sonderwunsch is selected and already exists, no action needed
+		        
+		        //System.out.println(isSelected);
+	        }
 	    }
-	    System.out.println("Daten gespeichert");
+	    //System.out.println("Daten gespeichert");}
 	}
    
   
@@ -342,11 +366,14 @@ public class FensterUndAussentuerenView extends BasisView{
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected void speichereSonderwuensche(){
   		try {
-			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId());
+			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId());
+			messageboxSpeichernErfolgreich("Fenster und Außentüren");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+  		
+  		
   	}
 
   	@Override

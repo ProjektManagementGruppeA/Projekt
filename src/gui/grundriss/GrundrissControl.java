@@ -1,5 +1,6 @@
 package gui.grundriss;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import business.DatabaseConnector;
+import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
@@ -15,6 +17,7 @@ import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 
 /**
  * Klasse, welche das Fenster mit den Sonderwuenschen zu den Grundriss-Varianten
@@ -32,10 +35,10 @@ public final class GrundrissControl {
 	 * Fenster fuer die Sonderwuensche zum Grundriss.
 	 * @param grundrissStage, Stage fuer das View-Objekt zu den Sonderwuenschen zum Grundriss
 	 */
-	public GrundrissControl(KundeModel kundeModel){  
+	public GrundrissControl(KundeModel kundeModel, Kunde kunde){  
 	   	Stage stageGrundriss = new Stage();
     	stageGrundriss.initModality(Modality.APPLICATION_MODAL);
-    	this.grundrissView = new GrundrissView(this, stageGrundriss); // ObjectId kunde
+    	this.grundrissView = new GrundrissView(this, stageGrundriss, kunde); // ObjectId kunde
 	}
 	    
 	/**
@@ -75,11 +78,11 @@ public final class GrundrissControl {
 		
 	    List<Sonderwunsch> sonderwunsch = SonderwunschModel.getInstance(connector).getSonderwunschByKategorie("Grundriss");
 	    
-	    System.out.println(sonderwunsch);
+	    //System.out.println(sonderwunsch);
 	    int[] preise = new int[6];
 	    for(int i = 0; i<sonderwunsch.size(); i++) {
 	    	preise[i] = sonderwunsch.get(i).getPreis();
-	    	System.out.println(sonderwunsch.get(i).getPreis());
+	    	//System.out.println(sonderwunsch.get(i).getPreis());
 	    	
 	    }
 	    

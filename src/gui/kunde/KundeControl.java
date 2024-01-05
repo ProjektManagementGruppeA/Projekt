@@ -11,6 +11,7 @@ import business.sonderwunschKategorie.SonderwunschKategorieModel;
 import business.sonderwunschKategorie.SonderwunschKategorie;
 import gui.fensterUndAussenentueren.FensterUndAussentuerenControl;
 import gui.grundriss.GrundrissControl;
+import gui.innentueren.InnentuerenControl;
 import javafx.stage.Stage;
 import validierung.kunde.KundeValidierung;
 import business.DatabaseConnector;
@@ -31,6 +32,7 @@ public class KundeControl {
        zum Grundriss zu dem Kunden */
     private GrundrissControl grundrissControl;
     private FensterUndAussentuerenControl fensterUndAussentuerenControl;
+	private InnentuerenControl innentuerenControl;
     
     /**
 	 * erzeugt ein ControlObjekt inklusive View-Objekt und Model-Objekt zum 
@@ -49,20 +51,32 @@ public class KundeControl {
      * erstellt, falls nicht vorhanden, ein Grundriss-Control-Objekt.
      * Das GrundrissView wird sichtbar gemacht.
      */
-    public void oeffneGrundrissControl(){
-    	if (this.grundrissControl == null){
-    		this.grundrissControl = new GrundrissControl(kundeModel);
+    public void oeffneGrundrissControl(Kunde kunde){
+    	/*if (this.grundrissControl == null){
+    		this.grundrissControl = new GrundrissControl(kundeModel, kunde);
       	}
+    	*/
+    	this.grundrissControl = new GrundrissControl(kundeModel, kunde);
     	this.grundrissControl.oeffneGrundrissView();
     }
     
     
-    public void oeffneFensterUndAussentuerenControl(){
-    	if (this.fensterUndAussentuerenControl == null){
+    public void oeffneFensterUndAussentuerenControl(Kunde kunde){
+    	/*if (this.fensterUndAussentuerenControl == null){
     		this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel);
       	}
+      	*/
+    	this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel, kunde);
     	this.fensterUndAussentuerenControl.oeffneGrundrissView();
     }
+    
+    public void oeffneInnentuerenControl() {
+    	if (this.innentuerenControl == null){
+    		this.innentuerenControl = new InnentuerenControl(kundeModel);
+      	}
+    	this.innentuerenControl.oeffneInnentuerenView();
+		
+	}
     
 	/**
 	 * speichert ein Kunde-Objekt in die Datenbank
@@ -84,6 +98,10 @@ public class KundeControl {
       		}
       		if (!KundeValidierung.isValidPhoneNumber(kunde.getTelefonnummer())) {
       			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Telefonummer ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidKundennummer(kunde.getKundennummer(), kundeModel)) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Kundennummer ist Invalid");
       			return;
       		}
     		kundeModel.addKunde(kunde);
@@ -132,6 +150,10 @@ public class KundeControl {
       			this.kundeView.zeigeFehlermeldung("Änderung Fehlgeschlagen", "Telefonummer ist Invalid");
       			return;
       		}
+      		if (!KundeValidierung.isValidKundennummer(kunde.getKundennummer(), kundeModel)) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Kundennummer ist Invalid");
+      			return;
+      		}
     		kundeModel.updateKunde(kunde);
     		this.kundeView.zeigeErfolg("Änderung Erfolgreich", "Die Änderungen wurden vorgenommen");
     	}
@@ -164,4 +186,6 @@ public class KundeControl {
     		return false;
     	}
     }
+
+	
 }
