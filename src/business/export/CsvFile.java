@@ -1,5 +1,11 @@
 package business.export;
 
+import business.sonderwunsch.Sonderwunsch;
+
+import java.io.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +18,25 @@ public class CsvFile implements ExternalFile {
         this.fileName = fileName;
         this.input = input;
     }
+
+    public void setInput(String[][] input) {
+        this.input = input;
+    }
+
+
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String[][] getInput() {
+        return input;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
     @Override
     public void export() throws IOException {
         File csvOutputFile = new File(fileName);
