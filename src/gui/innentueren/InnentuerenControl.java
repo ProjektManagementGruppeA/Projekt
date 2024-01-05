@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.bson.types.ObjectId;
-
 import business.DatabaseConnector;
+import business.export.CsvFile;
 import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import business.kundeSonderwunsch.KundeSonderwunsch;
@@ -15,6 +15,10 @@ import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class InnentuerenControl {
 	
@@ -120,9 +124,12 @@ public class InnentuerenControl {
 		return null;
 	}
 
-	public void speichereCsv() {
+	public void speichereCsv() throws IOException {
 		// TODO Auto-generated method stub
-		
+		String[][] input = new String[2][];
+		input[0] =  Arrays.toString(leseInnentuerenSonderwuenschePreise()).split("[\\[\\]]")[1].split(", ");
+		CsvFile idFile = new CsvFile("Kundennummer_NachnameDesKunden_Innentueren",input);
+		idFile.export();
 	}
 
 	public int[] lesePreise() {

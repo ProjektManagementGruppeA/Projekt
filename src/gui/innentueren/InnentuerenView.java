@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class InnentuerenView extends BasisView{
 	
 	private InnentuerenControl innentuerenControl;
@@ -119,12 +121,17 @@ public class InnentuerenView extends BasisView{
 		                     chckBxGlasausschnittMilch.isSelected()? (int) spinGlasausschnittMilchAnzahl.getValue(): 0,
 		                     chckBxInnentuerGarage.isSelected()? 1 : 0
 		};
-		this.innentuerenControl.speichereSonderwuensche(checked);
+		try {
+			this.innentuerenControl.speichereSonderwuensche(checked);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
-	protected void speichereCsv() {
+	protected void speichereCsv() throws IOException {
 		this.innentuerenControl.speichereCsv();
 		
 	}

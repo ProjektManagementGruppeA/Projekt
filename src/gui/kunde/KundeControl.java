@@ -51,18 +51,22 @@ public class KundeControl {
      * erstellt, falls nicht vorhanden, ein Grundriss-Control-Objekt.
      * Das GrundrissView wird sichtbar gemacht.
      */
-    public void oeffneGrundrissControl(){
-    	if (this.grundrissControl == null){
-    		this.grundrissControl = new GrundrissControl(kundeModel);
+    public void oeffneGrundrissControl(Kunde kunde){
+    	/*if (this.grundrissControl == null){
+    		this.grundrissControl = new GrundrissControl(kundeModel, kunde);
       	}
+    	*/
+    	this.grundrissControl = new GrundrissControl(kundeModel, kunde);
     	this.grundrissControl.oeffneGrundrissView();
     }
     
     
-    public void oeffneFensterUndAussentuerenControl(){
-    	if (this.fensterUndAussentuerenControl == null){
+    public void oeffneFensterUndAussentuerenControl(Kunde kunde){
+    	/*if (this.fensterUndAussentuerenControl == null){
     		this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel);
       	}
+      	*/
+    	this.fensterUndAussentuerenControl = new FensterUndAussentuerenControl(kundeModel, kunde);
     	this.fensterUndAussentuerenControl.oeffneGrundrissView();
     }
     
@@ -94,6 +98,10 @@ public class KundeControl {
       		}
       		if (!KundeValidierung.isValidPhoneNumber(kunde.getTelefonnummer())) {
       			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Telefonummer ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidKundennummer(kunde.getKundennummer(), kundeModel)) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Kundennummer ist Invalid");
       			return;
       		}
     		kundeModel.addKunde(kunde);
@@ -140,6 +148,10 @@ public class KundeControl {
       		}
       		if (!KundeValidierung.isValidPhoneNumber(kunde.getTelefonnummer())) {
       			this.kundeView.zeigeFehlermeldung("Änderung Fehlgeschlagen", "Telefonummer ist Invalid");
+      			return;
+      		}
+      		if (!KundeValidierung.isValidKundennummer(kunde.getKundennummer(), kundeModel)) {
+      			this.kundeView.zeigeFehlermeldung("Speicherung Fehlgeschlagen", "Kundennummer ist Invalid");
       			return;
       		}
     		kundeModel.updateKunde(kunde);
