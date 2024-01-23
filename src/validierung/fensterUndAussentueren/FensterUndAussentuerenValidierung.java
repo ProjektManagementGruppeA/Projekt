@@ -1,33 +1,38 @@
 package validierung.fensterUndAussentueren;
 
-public class FensterUndAussentuerenValidierung {
+import javafx.scene.control.CheckBox;
 
+public class FensterUndAussentuerenValidierung {
+	
 	public static boolean hasDachgeschoss(boolean hasDachgeschoss) {
 		return hasDachgeschoss == true;	
 	}
 	
-	public static boolean hasVorbereitungElektrischeAntriebeEG(boolean hasVorbereitungElektrischeAntriebeEG) {
-		return hasVorbereitungElektrischeAntriebeEG == true;
+	public static void pruefeVorbereitungEG(CheckBox vorbereitungEG, CheckBox ElektroEG) {
+		if(vorbereitungEG.isSelected()) {
+			ElektroEG.setDisable(false);
+		}else {
+			ElektroEG.setDisable(true);
+			ElektroEG.setSelected(false);
+		}
 	}
 	
-	public static boolean hasVorbereitungElektrischeAntriebeOG(boolean hasVorbereitungElektrischeAntriebeOG) {
-		return hasVorbereitungElektrischeAntriebeOG == true;
+	public static void pruefeVorbereitungOG(CheckBox vorbereitungOG, CheckBox ElektroOG) {
+		if(vorbereitungOG.isSelected()) {
+			ElektroOG.setDisable(false);
+		}else {
+			ElektroOG.setDisable(true);
+			ElektroOG.setSelected(false);
+		}
 	}
 	
-	public static boolean hasVorbereitungElektrischeAntriebeDG(boolean hasVorbereitungElektrischeAntriebeDG) {
-		return hasVorbereitungElektrischeAntriebeDG ==true;
-	}
-	
-	public static boolean validElektrischeRolladenEG(boolean hasVorbereitungElektrischeRolladenEG, boolean hasElektrischeRolladenEG) {
-		return (hasVorbereitungElektrischeRolladenEG && hasElektrischeRolladenEG) == true;
-	}
-	
-	public static boolean validElektrischeRolladenOG(boolean hasVorbereitungElektrischeRolladenOG, boolean hasElektrischeRolladenOG) {
-		return (hasVorbereitungElektrischeRolladenOG && hasElektrischeRolladenOG) == true;
-	}
-	
-	public static boolean validElektrischeRolladenDG(boolean hasVorbereitungElektrischeRolladenDG, boolean hasElektrischeRolladenDG) {
-		return (hasVorbereitungElektrischeRolladenDG && hasElektrischeRolladenDG) == true;
+	public static void pruefeVorbereitungDG(CheckBox vorbereitungDG, CheckBox ElektroDG) {
+		if(vorbereitungDG.isSelected()) {
+			ElektroDG.setDisable(false);
+		}else {
+			ElektroDG.setDisable(true);
+			ElektroDG.setSelected(false);
+		}
 	}
 
 }
