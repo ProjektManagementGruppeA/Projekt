@@ -1,10 +1,11 @@
 package gui.innentueren;
 
-import java.util.Iterator;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.bson.types.ObjectId;
+
 import business.DatabaseConnector;
 import business.export.CsvFile;
 import business.kunde.Kunde;
@@ -13,15 +14,8 @@ import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
 import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.FileChooser.ExtensionFilter;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class InnentuerenControl {
 	
@@ -84,19 +78,19 @@ public class InnentuerenControl {
 		List<KundeSonderwunsch> kundeSonderwuensche = this.leseInnentuerenKundenSonderwuensche();
 		leseInnentuerenSonderwuensche();
 			
-		if (InnentürenValidierung.validiereGlasKlar(anzahlarray[0])) {
+		if (InnentuerenValidierung.validiereGlasKlar(anzahlarray[0])) {
 			speichernOderAendern(anzahlarray[0], kundeSonderwuensche, this.sonderwuensche.get(0));
 		}
 		else {
 			innentuerenView.zeigeFehlermeldung("Fehler", "Die Anzahl der Glasausschnitte(Klar) ist falsch");
 		}
-		if (InnentürenValidierung.validiereGlasMilch(anzahlarray[1])) {
+		if (InnentuerenValidierung.validiereGlasMilch(anzahlarray[1])) {
 			speichernOderAendern(anzahlarray[1], kundeSonderwuensche, this.sonderwuensche.get(1));
 		}
 		else {
 			innentuerenView.zeigeFehlermeldung("Fehler", "Die Anzahl der Glasausschnitte(Milchig) ist falsch");
 		}
-		if (InnentürenValidierung.validiereGarage(anzahlarray[2])) {
+		if (InnentuerenValidierung.validiereGarage(anzahlarray[2])) {
 			speichernOderAendern(anzahlarray[2], kundeSonderwuensche, this.sonderwuensche.get(2));
 		}
 		else {
