@@ -13,6 +13,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import src.gui.innentueren.ExtensionFilter;
+import src.gui.innentueren.File;
+import src.gui.innentueren.FileChooser;
+import src.gui.innentueren.String;
 import validierung.fensterUndAussentueren.FensterUndAussentuerenValidierung;
 
 /**
@@ -244,6 +248,21 @@ public class KundeView{
    	}
    	
    	private void exportAsCsv() {
+   		FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Speichere CSV Datei");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV Dateien", "*.csv"));
+        File source = fileChooser.showSaveDialog(primaryStage);
+        String[][] inputString = new String[2][6];
+        inputString[0][0] = "Kundennummer";
+	 	inputString[0][1] = "Email";
+	 	inputString[0][2] = "Vorname";
+	 	inputString[0][3] = "Nachname";
+	 	inputString[0][4] = "Telefonnummer";
+	 	inputString[1][0] = txtKundennummer.getText();
+	 	inputString[1][1] = txtEmail.getText();
+	 	inputString[1][2] = txtVorname.getText();
+	 	inputString[1][3] = txtNachname.getText();
+	 	inputString[1][4] = txtTelefonnummer.getText();
 	}
    	
    /** zeigt ein Fehlermeldungsfenster an
