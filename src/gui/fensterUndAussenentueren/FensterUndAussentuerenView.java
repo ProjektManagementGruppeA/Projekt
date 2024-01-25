@@ -20,6 +20,7 @@ import business.sonderwunsch.SonderwunschModel;
 import gui.basis.BasisView;
 import validierung.fensterUndAussentueren.FensterUndAussentuerenValidierung;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -88,67 +89,81 @@ public class FensterUndAussentuerenView extends BasisView{
 	
 	public Button button = new Button("Sonderwunsch speichern");
 	
+	String kundennummer;
+	
     /**
      * erzeugt ein GrundrissView-Objekt, belegt das zugehoerige Control
      * mit dem vorgegebenen Objekt und initialisiert die Steuerelemente der Maske
      * @param grundrissControl GrundrissControl, enthaelt das zugehoerige Control
      * @param grundrissStage Stage, enthaelt das Stage-Objekt fuer diese View
      */
-    public FensterUndAussentuerenView (FensterUndAussentuerenControl fensterUndAussentuerenControl, Stage grundrissStage){ // ObjectId kunde von MainView aus übergeben
+    public FensterUndAussentuerenView (FensterUndAussentuerenControl fensterUndAussentuerenControl, Stage grundrissStage, Kunde kunde){ // ObjectId kunde von MainView aus übergeben
     	super(grundrissStage);
         this.fensterUndAussentuerenControl = fensterUndAussentuerenControl;
         grundrissStage.setTitle("Sonderwünsche zu Fenster und Außentüren");
         this.preise = this.fensterUndAussentuerenControl.leseFensterUndAussentuerenSonderwuenschePreise();
-        
+        this.kundennummer = kunde.getKundennummer();
 	    this.initKomponenten();
-	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId(); // replace with constructor parameter
+	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId(); 
 	  
 	    
 	    this.loadSonderwuensche(this.kunde);
 	    
-	    
+	    grundrissStage.setOnCloseRequest(event -> {
+	        try {
+	            this.fensterUndAussentuerenControl = null;
+	            //System.out.println("Controller entfernt");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 	 
     }
     
     
-
-    
     public void loadSonderwuensche(ObjectId kunde) {
         List<KundeSonderwunsch> list = this.fensterUndAussentuerenControl.loadKundenSonderwunsch(kunde, "Fenster und Außentüren");
+        
+    	this.chckBxElektrischeRollaedenEG.setDisable(true);
+    	this.chckBxElektrischeRollaedenOG.setDisable(true);
+    	this.chckBxElektrischeRollaedenDG.setDisable(true);
 
         if (list.size() >= 1) {
             for (int i = 0; i < list.size(); i++) {
                 ObjectId sonderwunschid = list.get(i).getSonderwunschId();
                 String beschreibung = SonderwunschModel.getInstance(connector).getSonderwunschById(sonderwunschid).getBeschreibung();
-                System.out.println(beschreibung);
-                System.out.println(list.get(i).getAnzahl());
+                //System.out.println(beschreibung);
+                //System.out.println(list.get(i).getAnzahl());
 
                 if (list.get(i).getAnzahl() >= 1 && "Schiebetüren im EG zur Terrasse".equals(beschreibung)) {
-                    chckBxSchiebetuerenEGTerrasse.setSelected(true);
+                    this.chckBxSchiebetuerenEGTerrasse.setSelected(true);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Schiebetüren im DG zur Dachterrasse".equals(beschreibung)) {
-                    chckBxSchiebetuerenDGDachterrasse.setSelected(true);
+                    this.chckBxSchiebetuerenDGDachterrasse.setSelected(true);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Erhöhter Einbruchschutz an der Haustür".equals(beschreibung)) {
-                    chckBxEinbruchschutzHaustuer.setSelected(true);
+                    this.chckBxEinbruchschutzHaustuer.setSelected(true);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Vorbereitung für elektrische Antriebe Rolläden EG".equals(beschreibung)) {
-                    chckBxVorbereitungRollaedenEG.setSelected(true);
+                    this.chckBxVorbereitungRollaedenEG.setSelected(true);
+                    this.chckBxElektrischeRollaedenEG.setDisable(false);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Vorbereitung für elektrische Antriebe Rolläden OG".equals(beschreibung)) {
-                    chckBxVorbereitungRollaedenOG.setSelected(true);
+                    this.chckBxVorbereitungRollaedenOG.setSelected(true);
+                    this.chckBxElektrischeRollaedenOG.setDisable(false);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Vorbereitung für elektrische Antriebe Rolläden DG".equals(beschreibung)) {
-                    chckBxVorbereitungRollaedenDG.setSelected(true);
+                    this.chckBxVorbereitungRollaedenDG.setSelected(true);
+                    this.chckBxElektrischeRollaedenDG.setDisable(false);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Elektrische Rolläden EG".equals(beschreibung)) {
-                    chckBxElektrischeRollaedenEG.setSelected(true);
+                    this.chckBxElektrischeRollaedenEG.setSelected(true);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Elektrische Rolläden OG".equals(beschreibung)) {
-                    chckBxElektrischeRollaedenOG.setSelected(true);
+                    this.chckBxElektrischeRollaedenOG.setSelected(true);
                 }
                 if (list.get(i).getAnzahl() >= 1 && "Elektrische Rolläden DG".equals(beschreibung)) {
-                    chckBxElektrischeRollaedenDG.setSelected(true);
+                    this.chckBxElektrischeRollaedenDG.setSelected(true);
                 }
             }
         }
@@ -170,32 +185,20 @@ public class FensterUndAussentuerenView extends BasisView{
 	        
 	        //System.out.println(sw.getBeschreibung().contains("Elektrische Rolläden"));
 	        
-	        if(sw.getBeschreibung().equals("Elektrische Rolläden EG") && !FensterUndAussentuerenValidierung.validElektrischeRolladenEG(findCheckBoxForSonderwunsch("Vorbereitung für elektrische Antriebe Rolläden EG").isSelected(), isSelected)){
-	        	isSelected = false;
-	        	chckBxElektrischeRollaedenEG.setSelected(false);
-	        }
-	        else if(sw.getBeschreibung().equals("Elektrische Rolläden OG") && !FensterUndAussentuerenValidierung.validElektrischeRolladenEG(findCheckBoxForSonderwunsch("Vorbereitung für elektrische Antriebe Rolläden OG").isSelected(), isSelected)){
-	        	isSelected = false;
-	        	chckBxElektrischeRollaedenOG.setSelected(false);
-	        }
-	        else if(sw.getBeschreibung().equals("Elektrische Rolläden DG") && !FensterUndAussentuerenValidierung.validElektrischeRolladenEG(findCheckBoxForSonderwunsch("Vorbereitung für elektrische Antriebe Rolläden DG").isSelected(), isSelected)){
-	        	isSelected = false;
-	        	chckBxElektrischeRollaedenDG.setSelected(false);
-	        }else {
+	        if (isSelected && existingKundeSonderwunsch == null) {
+	            // Sonderwunsch is selected and not yet in the database for this customer
+	        	//System.out.println("Sonderwunsch is selected and not yet in the database for this customer");
+	            kundeSonderwunschModel.addKundeSonderwunsch(kunde, sw.getId(), 1);
+	        } else if (!isSelected && existingKundeSonderwunsch != null) {
+	            // Sonderwunsch is not selected but exists in the database for this customer
+	        	//System.out.println("Sonderwunsch is not selected but exists in the database for this customer");
+	            kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId(), 0);
+	        } // If Sonderwunsch is selected and already exists, no action needed
 	        
-		        if (isSelected && existingKundeSonderwunsch == null) {
-		            // Sonderwunsch is selected and not yet in the database for this customer
-		        	System.out.println("Sonderwunsch is selected and not yet in the database for this customer");
-		            kundeSonderwunschModel.addKundeSonderwunsch(kunde, sw.getId(), 1);
-		        } else if (!isSelected && existingKundeSonderwunsch != null) {
-		            // Sonderwunsch is not selected but exists in the database for this customer
-		        	System.out.println("Sonderwunsch is not selected but exists in the database for this customer");
-		            kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId(), 0);
-		        } // If Sonderwunsch is selected and already exists, no action needed
-		        
-		        System.out.println(isSelected);
+	        //System.out.println(isSelected);
+	        
 	    }
-	    System.out.println("Daten gespeichert");}
+	    System.out.println("Daten gespeichert");
 	}
    
   
@@ -294,8 +297,10 @@ public class FensterUndAussentuerenView extends BasisView{
     	txtPreisElektrischeRollaedenDG.setEditable(false);
     	super.getGridPaneSonderwunsch().add(lblElektrischeRollaedenDGEuro, 2, 9);
     	super.getGridPaneSonderwunsch().add(chckBxElektrischeRollaedenDG, 3, 9);
-
     	
+    	this.chckBxVorbereitungRollaedenEG.setOnAction(event -> FensterUndAussentuerenValidierung.pruefeVorbereitungEG(chckBxVorbereitungRollaedenEG, chckBxElektrischeRollaedenEG));
+    	this.chckBxVorbereitungRollaedenOG.setOnAction(event -> FensterUndAussentuerenValidierung.pruefeVorbereitungOG(chckBxVorbereitungRollaedenOG, chckBxElektrischeRollaedenOG));
+    	this.chckBxVorbereitungRollaedenDG.setOnAction(event -> FensterUndAussentuerenValidierung.pruefeVorbereitungDG(chckBxVorbereitungRollaedenDG, chckBxElektrischeRollaedenDG));
  
     }  
     
@@ -358,11 +363,13 @@ public class FensterUndAussentuerenView extends BasisView{
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected void speichereSonderwuensche(){
   		try {
-			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId());
+			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId());
+			messageboxSpeichernErfolgreich("Fenster und Außentüren");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+  
   	}
 
   	@Override
@@ -406,7 +413,14 @@ public class FensterUndAussentuerenView extends BasisView{
   	    }
   	}
   	
- 	
+    public void zeigeFehlermeldung(String ueberschrift, String meldung){
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Fehlermeldung");
+        alert.setHeaderText(ueberschrift);
+        alert.setContentText(meldung);
+        alert.show();
+    }
+   
  }
 
 

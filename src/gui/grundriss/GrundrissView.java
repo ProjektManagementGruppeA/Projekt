@@ -1,4 +1,4 @@
-package gui.grundriss;
+ package gui.grundriss;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +10,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import business.DatabaseConnector;
+import business.haustyp.Haustyp;
 import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import business.kundeSonderwunsch.KundeSonderwunsch;
@@ -20,6 +21,7 @@ import gui.basis.BasisView;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import validierung.grundriss.GrundrissValidierung;
 import javafx.stage.Stage;
 
 /**
@@ -81,25 +83,34 @@ public class GrundrissView extends BasisView{
 	
 	public Button button = new Button("Sonderwunsch speichern");
 	
+	String kundennummer; 
+	
     /**
      * erzeugt ein GrundrissView-Objekt, belegt das zugehoerige Control
      * mit dem vorgegebenen Objekt und initialisiert die Steuerelemente der Maske
      * @param grundrissControl GrundrissControl, enthaelt das zugehoerige Control
      * @param grundrissStage Stage, enthaelt das Stage-Objekt fuer diese View
      */
-    public GrundrissView (GrundrissControl grundrissControl, Stage grundrissStage){ // ObjectId kunde von MainView aus übergeben
+    public GrundrissView (GrundrissControl grundrissControl, Stage grundrissStage, Kunde kunde){ // ObjectId kunde von MainView aus übergeben
     	super(grundrissStage);
         this.grundrissControl = grundrissControl;
         grundrissStage.setTitle("Sonderwünsche zu Grundriss-Varianten");
         this.preise = this.grundrissControl.leseGrundrissSonderwuenschePreise();
-        
+        this.kundennummer = kunde.getKundennummer();
 	    this.initKomponenten();
-	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId(); // replace with constructor parameter
+	    this.kunde = KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId(); // replace with constructor parameter
 	  
 	    
 	    this.loadSonderwuensche(this.kunde);
 	    
-	    
+	    grundrissStage.setOnCloseRequest(event -> {
+	        try {
+	            this.grundrissControl = null;
+	            //System.out.println("Controller entfernt");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 	 
     }
     
@@ -116,8 +127,8 @@ public class GrundrissView extends BasisView{
 		   for(int i = 0; i < list.size(); i++) {
 			   ObjectId sonderwunschid = list.get(i).getSonderwunschId();
 			   String beschreibung = SonderwunschModel.getInstance(connector).getSonderwunschById(sonderwunschid).getBeschreibung();
-			   System.out.println(beschreibung);
-			   System.out.println(list.get(i).getAnzahl());
+			   //System.out.println(beschreibung);
+			   //System.out.println(list.get(i).getAnzahl());
 			   
 			   
 			   if (list.get(i).getAnzahl() >= 1 && "Wand zur Abtrennung der Küche von dem Essbereich".equals(beschreibung)) {
@@ -148,7 +159,7 @@ public class GrundrissView extends BasisView{
 	    
 	    KundeSonderwunschModel kundeSonderwunschModel = KundeSonderwunschModel.getInstance(connector);
 	    List<Sonderwunsch> listSonderwunsch = SonderwunschModel.getInstance(connector).getSonderwunschByKategorie("Grundriss");
-	    
+
 	    for(Sonderwunsch sw : listSonderwunsch) {
 	        CheckBox correspondingCheckBox = findCheckBoxForSonderwunsch(sw.getBeschreibung());
 	        if(correspondingCheckBox == null) continue; // If no corresponding checkbox found, skip to next Sonderwunsch
@@ -156,13 +167,40 @@ public class GrundrissView extends BasisView{
 	        boolean isSelected = correspondingCheckBox.isSelected();
 	        KundeSonderwunsch existingKundeSonderwunsch = kundeSonderwunschModel.getKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId());
 
-	        if (isSelected && existingKundeSonderwunsch == null) {
-	            // Sonderwunsch is selected and not yet in the database for this customer
-	            kundeSonderwunschModel.addKundeSonderwunsch(kunde, sw.getId(), 1);
-	        } else if (!isSelected && existingKundeSonderwunsch != null) {
-	            // Sonderwunsch is not selected but exists in the database for this customer
-	            kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId(), 0);
-	        } // If Sonderwunsch is selected and already exists, no action needed
+	        if(sw.getBeschreibung().equals("Tür in der Wand zwischen Küche und Essbereich") && !GrundrissValidierung.hasTuerZwischenKuecheUndEssbereich(findCheckBoxForSonderwunsch("Wand zur Abtrennung der Küche von dem Essbereich").isSelected(), isSelected)){
+	        	isSelected = false;
+	        	chckBxWandKueche.setSelected(false);
+	        }
+	        else if(sw.getBeschreibung().equals("Großes Zimmer im OG statt zwei kleinen Zimmern")){
+	        	isSelected = false;
+	        	chckBxOg.setSelected(false);
+	        }
+	        else if(sw.getBeschreibung().equals("Abgetrennter Treppenraum im DG")){
+	        	isSelected = false;
+	        	chckBxTreppenraumDg.setSelected(false);
+	        }
+	        else if(sw.getBeschreibung().equals("Vorrichtung eines Bades im DG")){
+	        	isSelected = false;
+	        	chckBxVBad.setSelected(false);
+	        }
+	        else if(sw.getBeschreibung().equals("Ausführung eines Bades im DG") && !GrundrissValidierung.isAusfuehrungBadDG(findCheckBoxForSonderwunsch("Vorrichtung eines Bades im DG").isSelected(), isSelected)){
+	        	isSelected = false;
+	        	chckBxABad.setSelected(false);
+	        }else {
+	        
+		        if (isSelected && existingKundeSonderwunsch == null) {
+		            // Sonderwunsch is selected and not yet in the database for this customer
+		        	System.out.println("Sonderwunsch is selected and not yet in the database for this customer");
+		            kundeSonderwunschModel.addKundeSonderwunsch(kunde, sw.getId(), 1);
+		        } else if (!isSelected && existingKundeSonderwunsch != null) {
+		            // Sonderwunsch is not selected but exists in the database for this customer
+		        	System.out.println("Sonderwunsch is not selected but exists in the database for this customer");
+		            kundeSonderwunschModel.updateKundeSonderwunschByKundeAndSonderwunsch(kunde, sw.getId(), 0);
+		        } // If Sonderwunsch is selected and already exists, no action needed
+		        
+		        System.out.println(isSelected);
+	    }
+	     
 	    }
 	}
    
@@ -289,7 +327,8 @@ public class GrundrissView extends BasisView{
    	/* speichert die ausgesuchten Sonderwuensche in der Datenbank ab */
   	protected void speichereSonderwuensche(){
   		try {
-			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer("12345678").getId());
+			this.saveSonderwuensche(KundeModel.getInstance(connector).getKundeByKundennummer(this.kundennummer).getId());
+			messageboxSpeichernErfolgreich("Grundriss");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -336,5 +375,4 @@ public class GrundrissView extends BasisView{
   	
  	
  }
-
 

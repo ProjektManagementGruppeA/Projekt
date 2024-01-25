@@ -13,6 +13,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import validierung.fensterUndAussentueren.FensterUndAussentuerenValidierung;
 
 /**
  * Klasse, welche das Grundfenster mit den Kundendaten bereitstellt.
@@ -142,10 +143,18 @@ public class KundeView{
  	        kundeControl.oeffneGrundrissControl(createKunde()); 
 	    });
     	mnItmFensterUndAussentueren.setOnAction(aEvent-> { //TODO Hier Kundennummer des aktuell Kunden übergeben (Übergabeparameter müssen noch angepasst werden)
- 	        kundeControl.oeffneFensterUndAussentuerenControl(); 
+    		
+    		int hausnummer = cmbBxNummerHaus.getValue();
+        	Haustyp haustyp = haustypModel.getHaustypByHausnummer(hausnummer);
+        	
+        	if(FensterUndAussentuerenValidierung.hasDachgeschoss(haustyp.isHatDachgeschoss())) {
+        		this.kundeControl.oeffneFensterUndAussentuerenControl(createKunde());
+        	}else {
+        		zeigeFehlermeldung("Um Fenster und Aussentueren zu bearbeiten brauchen sie ein Dachgeschoss!", "Fehlender Dachgeschoss");
+        	}
 	    });
     	mnItmInnentueren.setOnAction(aEvent -> {
-    		kundeControl.oeffneInnentuerenControl();
+    		kundeControl.oeffneInnentuerenControl(createKunde());
     	});
       	mnItmCsvExport.setOnAction(aEvent-> {
        		exportAsCsv();
@@ -181,6 +190,7 @@ public class KundeView{
     
     private void legeKundenAn(){
     	Kunde kunde = createKunde();
+        
         kundeControl.speichereKunden(kunde);
 	}
 

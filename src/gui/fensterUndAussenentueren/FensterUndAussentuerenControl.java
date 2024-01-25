@@ -8,12 +8,13 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 import business.DatabaseConnector;
+import business.kunde.Kunde;
 import business.kunde.KundeModel;
 import business.kundeSonderwunsch.KundeSonderwunsch;
 import business.kundeSonderwunsch.KundeSonderwunschModel;
 import business.sonderwunsch.Sonderwunsch;
 import business.sonderwunsch.SonderwunschModel;
-import gui.grundriss.GrundrissView;
+
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -33,10 +34,10 @@ public final class FensterUndAussentuerenControl {
 	 * Fenster fuer die Sonderwuensche zum Grundriss.
 	 * @param grundrissStage, Stage fuer das View-Objekt zu den Sonderwuenschen zum Grundriss
 	 */
-	public FensterUndAussentuerenControl(KundeModel kundeModel){  
+	public FensterUndAussentuerenControl(KundeModel kundeModel, Kunde kunde){  
 	   	Stage stageFensterUndAussentueren= new Stage();
 	   	stageFensterUndAussentueren.initModality(Modality.APPLICATION_MODAL);
-    	this.fensterUndAussentuerenView = new FensterUndAussentuerenView(this, stageFensterUndAussentueren); // ObjectId kunde
+    	this.fensterUndAussentuerenView = new FensterUndAussentuerenView(this, stageFensterUndAussentueren, kunde); // ObjectId kunde
 	}
 	    
 	/**
@@ -76,11 +77,11 @@ public final class FensterUndAussentuerenControl {
 		
 	    List<Sonderwunsch> sonderwunsch = SonderwunschModel.getInstance(connector).getSonderwunschByKategorie("Fenster und Außentüren");
 	    
-	    System.out.println(sonderwunsch);
+	    //System.out.println(sonderwunsch);
 	    int[] preise = new int[9];
 	    for(int i = 0; i<sonderwunsch.size(); i++) {
 	    	preise[i] = sonderwunsch.get(i).getPreis();
-	    	System.out.println(sonderwunsch.get(i).getPreis());
+	    	//System.out.println(sonderwunsch.get(i).getPreis());
 	    	
 	    }
 	    

@@ -156,6 +156,11 @@ public class KundeSonderwunschModel {
         DeleteResult result = collection.deleteOne(Filters.and(Filters.eq("kundeId", kundeId), Filters.eq("sonderwunschId", sonderwunschId)));
         return result.getDeletedCount() > 0;
     }
+    
+    public boolean deleteKundeSonderwunschByKundeId(ObjectId kundeId) {
+        DeleteResult result = collection.deleteMany(Filters.eq("kundeId", kundeId));
+        return result.getDeletedCount() > 0;
+    }
 
     /**
      * Wandelt ein Document in ein KundeSonderwunsch-Objekt um.
