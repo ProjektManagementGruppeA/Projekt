@@ -5,6 +5,8 @@ import org.bson.types.ObjectId;
 import business.haustyp.Haustyp;
 import business.haustyp.HaustypModel;
 import business.kunde.*;
+import java.io.File;
+import business.export.CsvFile;
 
 import javafx.geometry.*;
 import javafx.scene.Scene;
@@ -13,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import src.gui.innentueren.CsvFile;
 import src.gui.innentueren.ExtensionFilter;
 import src.gui.innentueren.File;
 import src.gui.innentueren.FileChooser;
@@ -263,6 +266,8 @@ public class KundeView{
 	 	inputString[1][2] = txtVorname.getText();
 	 	inputString[1][3] = txtNachname.getText();
 	 	inputString[1][4] = txtTelefonnummer.getText();
+	 	CsvFile idFile = new CsvFile(source,inputString);
+		 idFile.export();
 	}
    	
    /** zeigt ein Fehlermeldungsfenster an
