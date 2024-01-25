@@ -123,7 +123,6 @@ class FensterUndAussentuerenValidierungTest {
 				() -> assertTrue(cb2.isSelected())
 				);
 	}
-	
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
