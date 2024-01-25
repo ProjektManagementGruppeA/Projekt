@@ -1,7 +1,5 @@
 package fensterUndAussentueren;
 
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -12,69 +10,123 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javafx.scene.control.CheckBox;
 import validierung.fensterUndAussentueren.FensterUndAussentuerenValidierung;
 
 class FensterUndAussentuerenValidierungTest {
 	
+	static CheckBox cb1 = new CheckBox();
+	static CheckBox cb2 = new CheckBox();
+	
 	@Test
-	void testHasVorbereitungElektrischeAntriebeEG() {
-		assertAll("HasVorbereitungElektrischeAntriebeEG",
-				()-> assertFalse(FensterUndAussentuerenValidierung.hasVorbereitungElektrischeAntriebeEG(false)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.hasVorbereitungElektrischeAntriebeEG(true))
+	void testPruefeVorbereitungEG() {
+		
+		
+		cb1.setSelected(true);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungEG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungEG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertFalse(cb2.isDisabled())
 				);
 	}
-
+	
 	@Test
-	void testHasVorbereitungElektrischeAntriebeOG() {
-		assertAll("HasVorbereitungElektrischeAntriebeOG",
-				()-> assertFalse(FensterUndAussentuerenValidierung.hasVorbereitungElektrischeAntriebeOG(false)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.hasVorbereitungElektrischeAntriebeOG(true))
+	void unpreparedInstallationEGShouldReturnFalse() {
+		cb1.setSelected(false);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungEG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungEG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertTrue(cb2.isDisabled()),
+				() -> assertFalse(cb1.isSelected()),
+				() -> assertFalse(cb2.isSelected())
 				);
 	}
-
+	
 	@Test
-	void testHasVorbereitungElektrischeAntriebeDG() {
-		assertAll("HasVorbereitungElektrischeAntriebeDG",
-				()-> assertFalse(FensterUndAussentuerenValidierung.hasVorbereitungElektrischeAntriebeDG(false)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.hasVorbereitungElektrischeAntriebeDG(true))
+	void preparedInstallationEGShouldReturnTrue() {
+		cb1.setSelected(true);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungEG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungEG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertFalse(cb2.isDisabled()),
+				() -> assertTrue(cb1.isSelected()),
+				() -> assertTrue(cb2.isSelected())
 				);
 	}
-
+	
 	@Test
-	void testValidElektrischeRolladenEG() {
-		assertAll("validEleketrischeRolladenEG",
-				()-> assertFalse(FensterUndAussentuerenValidierung.validElektrischeRolladenEG(false,false)),
-				()-> assertFalse(FensterUndAussentuerenValidierung.validElektrischeRolladenEG(false,true)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.validElektrischeRolladenEG(true,false)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.validElektrischeRolladenEG(true,true))
+	void unpreparedInstallationOGShouldReturnFalse() {
+		cb1.setSelected(false);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungOG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungOG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertTrue(cb2.isDisabled()),
+				() -> assertFalse(cb1.isSelected()),
+				() -> assertFalse(cb2.isSelected())
 				);
 	}
-
+	
 	@Test
-	void testValidElektrischeRolladenOG() {
-		assertAll("validEleketrischeRolladenOG",
-				()-> assertFalse(FensterUndAussentuerenValidierung.validElektrischeRolladenOG(false,false)),
-				()-> assertFalse(FensterUndAussentuerenValidierung.validElektrischeRolladenOG(false,true)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.validElektrischeRolladenOG(true,false)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.validElektrischeRolladenOG(true,true))
+	void preparedInstallationOGShouldReturnTrue() {
+		cb1.setSelected(true);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungOG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungOG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertFalse(cb2.isDisabled()),
+				() -> assertTrue(cb1.isSelected()),
+				() -> assertTrue(cb2.isSelected())
 				);
 	}
-
+	
+	
 	@Test
-	void testValidElektrischeRolladenDG() {
-		assertAll("validEleketrischeRolladenDG",
-				()-> assertFalse(FensterUndAussentuerenValidierung.validElektrischeRolladenDG(false,false)),
-				()-> assertFalse(FensterUndAussentuerenValidierung.validElektrischeRolladenDG(false,true)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.validElektrischeRolladenDG(true,false)),
-				()-> assertTrue(FensterUndAussentuerenValidierung.validElektrischeRolladenDG(true,true))
+	void unpreparedInstallationDGShouldReturnFalse() {
+		cb1.setSelected(false);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungDG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungDG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertTrue(cb2.isDisabled()),
+				() -> assertFalse(cb1.isSelected()),
+				() -> assertFalse(cb2.isSelected())
+				);
+	}
+	
+	@Test
+	void preparedInstallationDGShouldReturnTrue() {
+		cb1.setSelected(true);
+		cb2.setSelected(true);
+		
+		FensterUndAussentuerenValidierung.pruefeVorbereitungDG(cb1,cb2)
+		
+		assertAll("pruefeVorbereitungDG",
+				() -> assertFalse(cb1.isDisabled()),
+				() -> assertFalse(cb2.isDisabled()),
+				() -> assertTrue(cb1.isSelected()),
+				() -> assertTrue(cb2.isSelected())
 				);
 	}
 	
 
-	
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
 	}
-
 
 }

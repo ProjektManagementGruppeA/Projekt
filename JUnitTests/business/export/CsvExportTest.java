@@ -1,6 +1,5 @@
 package business.export;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
@@ -21,12 +20,11 @@ import business.export.CsvFile;
 
 class CsvExportTest {
 	
-	private static String fileName= "test_file.csv";
-	
+	private static File fileName = new File("test_file.csv"); 
 	
 	@BeforeEach
 	void setup() {
-		
+		fileName = new File("test_file.csv"); // Doppelt hält besser oder so...
 	}
 
 	@AfterAll
@@ -42,13 +40,10 @@ class CsvExportTest {
 	@Test
 	void correctFormatShouldBeEqual() {
 		
-		
-		
 		String [] [] fileContent = {
             {"Name", "Age", "City", "Occupation", "Salary", "Education"},
             {"John Doe", "28", "New York", "Software Engineer", "90000", "Bachelor's"}
             };
-		
 		
 		ExternalFile file = new CsvFile(fileName,fileContent);
 
